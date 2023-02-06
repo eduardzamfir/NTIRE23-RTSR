@@ -86,7 +86,7 @@ def main(args):
     logger.info("{:>16s} : {:<.4f} [M]".format("#Params", num_parameters))
 
     ave_runtime = sum(test_results["runtime"]) / len(test_results["runtime"]) / 1000.0
-    logger.info('------> Average runtime of ({}) is : {:.6f} seconds'.format(args.lr_dir, ave_runtime))
+    logger.info('------> Average runtime of ({}) is : {:.6f} seconds'.format(args.submission_id, ave_runtime))
         
         
 if __name__ == "__main__":
