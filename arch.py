@@ -664,8 +664,8 @@ class UpsampleOneStep(nn.Sequential):
     
     
 
-class SRModel(nn.Module):
-    r""" SRModel
+class Swin2SR(nn.Module):
+    r""" Swin2SR
         A PyTorch impl of : `Swin2SR: SwinV2 Transformer for Compressed Image Super-Resolution and Restoration`.
     Args:
         img_size (int | tuple(int)): Input image size. Default 64
@@ -697,7 +697,7 @@ class SRModel(nn.Module):
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
                  use_checkpoint=False, upscale=2, img_range=1., upsampler='', resi_connection='1conv',
                  **kwargs):
-        super(SRModel, self).__init__()
+        super(Swin2SR, self).__init__()
         num_in_ch = in_chans
         num_out_ch = in_chans
         num_feat = 64
@@ -994,12 +994,26 @@ class SRModel(nn.Module):
         return flops
 
 
+def srmodel():
+    """
+    Define SRModel architecture here and return instance.
+    """
+    upscale = 4
+    window_size = 8
+    height = (1024 // upscale // window_size + 1) * window_size
+    width = (720 // upscale // window_size + 1) * window_size   
+    model = Swin2SR(upscale=2, img_size=(height, width),
+                   window_size=window_size, img_range=1., depths=[6, 6, 6, 6],
+                   embed_dim=60, num_heads=[6, 6, 6, 6], mlp_ratio=2, upsampler='pixelshuffledirect')
+    return model
+
+
 if __name__ == '__main__':
     upscale = 4
     window_size = 8
     height = (1024 // upscale // window_size + 1) * window_size
     width = (720 // upscale // window_size + 1) * window_size
-    model = SRModel(upscale=2, img_size=(height, width),
+    model = Swin2SR(upscale=2, img_size=(height, width),
                    window_size=window_size, img_range=1., depths=[6, 6, 6, 6],
                    embed_dim=60, num_heads=[6, 6, 6, 6], mlp_ratio=2, upsampler='pixelshuffledirect')
     print(model)
@@ -1008,3 +1022,6 @@ if __name__ == '__main__':
     x = torch.randn((1, 3, height, width))
     x = model(x)
     print(x.shape)
+    
+
+
