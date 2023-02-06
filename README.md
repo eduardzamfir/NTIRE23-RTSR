@@ -1,5 +1,5 @@
 ## [NTIRE 2023 Workshop and Challenge](https://cvlai.net/ntire/2023/) @ CVPR 2023
-## Real-Time Super-Resolution Challenge
+### Real-Time Super-Resolution Challenge
 
 
 **Prepare Test Dataset**
