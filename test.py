@@ -1,13 +1,21 @@
 import os
-import logging
 import torch
+import logging
+import argparse
 
 from collections import OrderedDict
 
-from arch import SRModel
+
+from arch import srmodel
+from utils import util_logger
+from utils import util_image as util
+from utils.model_summary import get_model_flops
 
 
-def main():
+
+def main(args):
+    util_logger.logger_info("NTIRE2023-Real-Time-SR", log_path="NTIRE2023-Real-Time-SR.log")
+    logger = logging.getLogger("NTIRE2023-Real-Time-SR")
     
     """
     BASIC SETTINGS
@@ -15,32 +23,77 @@ def main():
     torch.cuda.current_device()
     torch.cuda.empty_cache()
     torch.backends.cudnn.benchmark = False
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     """
     LOAD MODEL
     """
-    model_path = os.path.join(os.getcwd(), 'checkpoint.pth')
-    model = SRModel()
+    model_path = os.path.join(args.checkpoint_dir, args.checkpoint_id)
+    model = srmodel()
     model.load_state_dict(torch.load(model_path), strict=True)
     model.eval()
     for k, v in model.named_parameters():
         v.requires_grad = False
     model = model.to(device)
     
-    """
-    READ IMAGES
-    """
-    testsets = os.path.join(os.getcwd(), 'data')
-    testset_L = 'DIV2K_test_LR'
-    L_folder = os.path.join(testsets, testset_L)
-    E_folder = os.path.join(testsets, testset_L+'_results')
+    # number of parameters
+    number_parameters = sum(map(lambda x: x.numel(), model.parameters()))
+    logger.info('Params number: {}'.format(number_parameters))
     
     """
-    SETUP METRICS
+    SETUP RUNTIME
     """
     test_results = OrderedDict()
-    test_results['runtime'] = []
-    
+    test_results["runtime"] = []
+
     start = torch.cuda.Event(enable_timing=True)
     end = torch.cuda.Event(enable_timing=True)
+    
+    """
+    TESTING
+    """
+    for img in util.get_image_paths(args.lr_dir)[0]:
+        # get LR image
+        idx += 1
+        img_name, ext = os.path.splitext(os.path.basename(img))
+
+        # load LR image
+        img_L = util.imread_uint(img, n_channels=3)
+        img_L = util.uint2tensor4(img_L)
+        img_L = img_L.to(device)
+
+        # forward pass
+        start.record()
+        img_E = model(img_L)
+        end.record()
+        torch.cuda.synchronize()
+        test_results["runtime"].append(start.elapsed_time(end))  # milliseconds
+
+        # postprocess
+        img_E = util.tensor2uint(img_E)
+        
+        # save model output
+        util.imsave(img_E, os.path.join(os.path.join(args.save_dir, args.submission_id, "results", img_name + ".png")))
+    
+    
+    input_dim = (3, 256, 256)  # set the input dimension
+    flops = get_model_flops(model, input_dim, False)
+    flops = flops / 10 ** 9
+    logger.info("{:>16s} : {:<.4f} [G]".format("FLOPs", flops))
+
+    num_parameters = sum(map(lambda x: x.numel(), model.parameters()))
+    num_parameters = num_parameters / 10 ** 6
+    logger.info("{:>16s} : {:<.4f} [M]".format("#Params", num_parameters))
+
+    ave_runtime = sum(test_results["runtime"]) / len(test_results["runtime"]) / 1000.0
+    logger.info('------> Average runtime of ({}) is : {:.6f} seconds'.format(args.lr_dir, ave_runtime))
+        
+        
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--lr-dir", type=str)
+    parser.add_argument("--save-dir", type=str)
+    parser.add_argument("--submission-id", type=str)
+    args = parser.parse_args()
+    
+    main(args)
