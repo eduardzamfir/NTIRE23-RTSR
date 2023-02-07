@@ -10,6 +10,7 @@ def main(args):
             
             # load image
             img = Image.open(os.path.join(args.gt_dir, filename))
+            img_name, ext = os.path.splitext(filename)
             
             # check sizes
             w, h = img.size
@@ -20,7 +21,7 @@ def main(args):
             img = img.resize((int(w/args.downsample_factor), int(h/args.downsample_factor)), resample=Image.BICUBIC)
             
             # save to JPEG
-            img.save(os.path.join(args.lr_dir, f"{filename}.jpg"), "JPEG", quality=args.jpeg_level)
+            img.save(os.path.join(args.lr_dir, f"{img_name}.jpg"), "JPEG", quality=args.jpeg_level)
     
 if __name__ == "__main__":
     
