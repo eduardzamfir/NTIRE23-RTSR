@@ -20,7 +20,7 @@ def main(args):
             img = img.resize((int(w/args.downsample_factor), int(h/args.downsample_factor)), resample=Image.BICUBIC)
             
             # save to JPEG
-            img.save(os.path.join(args.lr_dir, f"LR_{args.downsampling_factor}x_{filename}.jpg"), "JPEG", quality=args.jpeg_level)
+            img.save(os.path.join(args.lr_dir, f"{filename}.jpg"), "JPEG", quality=args.jpeg_level)
     
 if __name__ == "__main__":
     
