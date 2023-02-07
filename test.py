@@ -16,7 +16,15 @@ from utils.model_summary import get_model_flops
 
 
 def main(args):
-    util_logger.logger_info("NTIRE2023-Real-Time-SR", log_path="NTIRE2023-Real-Time-SR.log")
+    """
+    SETUP DIRS
+    """
+    pathlib.Path(os.path.join(args.save_dir, args.submission_id, "results")).mkdir(parents=True, exist_ok=True)
+    
+    """
+    SETUP LOGGER
+    """
+    util_logger.logger_info("NTIRE2023-Real-Time-SR", log_path=os.path.join(args.save_dir, args.submission_id, f"Submission_{args.submission_id}.txt"))
     logger = logging.getLogger("NTIRE2023-Real-Time-SR")
     
     """
@@ -27,11 +35,7 @@ def main(args):
     torch.backends.cudnn.benchmark = False
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    """
-    SETUP DIRS
-    """
-    pathlib.Path(os.path.join(args.save_dir, args.submission_id, "results")).mkdir(parents=True, exist_ok=True)
-    
+   
     """
     LOAD MODEL
     """
@@ -59,7 +63,7 @@ def main(args):
     """
     TESTING
     """
-    for img in tqdm(util.get_image_paths(args.lr_dir)[0]):
+    for img in tqdm(util.get_image_paths(args.lr_dir)):
         # get LR image
         img_name, ext = os.path.splitext(os.path.basename(img))
 
@@ -97,10 +101,10 @@ def main(args):
         
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--lr-dir", type=str)
-    parser.add_argument("--save-dir", type=str)
-    parser.add_argument("--submission-id", type=str)
-    parser.add_argument("--checkpoint", type=str)
+    parser.add_argument("--lr-dir", type=str, default="./testset")
+    parser.add_argument("--save-dir", type=str, default="./outputs")
+    parser.add_argument("--submission-id", type=str, default="1234")
+    parser.add_argument("--checkpoint", type=str, default="checkpoint.pth")
     args = parser.parse_args()
-    
+        
     main(args)

@@ -3,6 +3,7 @@ import torch
 import logging
 import argparse
 
+from tqdm import tqdm
 from collections import OrderedDict
 
 
@@ -14,7 +15,10 @@ from utils.model_summary import get_model_flops
 
 
 def main(args):
-    util_logger.logger_info("NTIRE2023-Real-Time-SR", log_path="NTIRE2023-Real-Time-SR.log")
+    """
+    SETUP LOGGER
+    """
+    util_logger.logger_info("NTIRE2023-Real-Time-SR", log_path=os.path.join(args.save_dir, args.submission_id, f"Submission_{args.submission_id}.txt"))
     logger = logging.getLogger("NTIRE2023-Real-Time-SR")
     
     """
@@ -29,13 +33,13 @@ def main(args):
     """
     SETUP DIRS
     """
-    sr_images = util.get_image_paths(os.path.join(args.save_dir, args.submission_id, "results"))[0]
-    hr_images = util.get_image_paths(args.gt_dir)[0]
+    sr_images = util.get_image_paths(os.path.join(args.save_dir, args.submission_id, "results"))
+    hr_images = util.get_image_paths(args.gt_dir)
     
     """
     EVALUATE
     """
-    for (sr, hr) in zip(sr_images, hr_images):
+    for (sr, hr) in tqdm(zip(sr_images, hr_images)):
         # get image names
         sr_img_name, _ = os.path.splitext(os.path.basename(sr))
         hr_img_name, _ = os.path.splitext(os.path.basename(hr))
@@ -72,8 +76,8 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--gt-dir", type=str)
-    parser.add_argument("--save-dir", type=str)
-    parser.add_argument("--submission-id", type=str)
+    parser.add_argument("--save-dir", type=str, default="./outputs")
+    parser.add_argument("--submission-id", type=str, default=1234)
     args = parser.parse_args()
     
     main(args)
