@@ -1,5 +1,6 @@
 import os
 import torch
+import pathlib
 import logging
 import argparse
 
@@ -26,9 +27,14 @@ def main(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     """
+    SETUP DIRS
+    """
+    pathlib.Path(os.path.join(args.save_dir, args.submission_id, "results")).mkdir(parents=True, exist_ok=True)
+    
+    """
     LOAD MODEL
     """
-    model_path = os.path.join(args.checkpoint_dir, args.checkpoint_id)
+    model_path = os.path.join(args.checkpoint)
     model = srmodel()
     model.load_state_dict(torch.load(model_path), strict=True)
     model.eval()
@@ -94,6 +100,7 @@ if __name__ == "__main__":
     parser.add_argument("--lr-dir", type=str)
     parser.add_argument("--save-dir", type=str)
     parser.add_argument("--submission-id", type=str)
+    parser.add_argument("--checkpoint", type=str)
     args = parser.parse_args()
     
     main(args)

@@ -14,7 +14,7 @@ python data/prepare_data.py --gt-dir [GT-ROOT] --lr-dir [LR-ROOT] --downsample-f
 
 We run this file to generate SR outputs using your method. We save the outputs and compute the metrics offline.
 ````
-python test.py --lr-dir [LR-ROOT] --save-dir [RESULTS-ROOT] --submission-id [SUBMISSION-ID]
+python test.py --lr-dir [LR-ROOT] --save-dir [RESULTS-ROOT] --submission-id [SUBMISSION-ID] --checkpoint [CHECKPOINT]
 ````
 
 We run this file to calculate PSRN/SSIM (RGB and Y-Channel) metrics.
