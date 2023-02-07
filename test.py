@@ -4,6 +4,7 @@ import pathlib
 import logging
 import argparse
 
+from tqdm import tqdm
 from collections import OrderedDict
 
 
@@ -58,9 +59,8 @@ def main(args):
     """
     TESTING
     """
-    for img in util.get_image_paths(args.lr_dir)[0]:
+    for img in tqdm(util.get_image_paths(args.lr_dir)[0]):
         # get LR image
-        idx += 1
         img_name, ext = os.path.splitext(os.path.basename(img))
 
         # load LR image

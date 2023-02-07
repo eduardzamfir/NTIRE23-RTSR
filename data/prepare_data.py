@@ -2,13 +2,14 @@ import os
 import pathlib
 import argparse
 from PIL import Image
+from tqdm import tqdm
 
 
 def main(args):
     
     pathlib.Path(os.path.join(args.lr_dir)).mkdir(parents=True, exist_ok=True)
     
-    for filename in os.listdir(args.gt_dir):
+    for filename in tqdm(os.listdir(args.gt_dir)):
         if filename.endswith(args.gt_file_ext):
             
             # load image
