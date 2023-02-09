@@ -41,7 +41,7 @@ def main(args):
     LOAD MODEL
     """
     model_path = os.path.join(args.checkpoint)
-    model = srmodel()
+    model = srmodel(scale=args.scale)
     model.load_state_dict(torch.load(model_path), strict=True)
     model.eval()
     for k, v in model.named_parameters():
@@ -56,7 +56,7 @@ def main(args):
     """
     SETUP DATALOADER
     """
-    transforms = dd.Compose([dd.CenterCrop(crop_size=args.crop_size)])
+    #transforms = dd.Compose([dd.CenterCrop(crop_size=args.crop_size)])
     dataset = dd.SRDataset(lr_images_dir=args.lr_dir, n_channels=args.n_channels, transform=None)
     dataloader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=True)
     
@@ -109,7 +109,7 @@ def main(args):
         
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--lr-dir", type=str, default="./testset")
+    parser.add_argument("--lr-dir", type=str, default="/home/eduardzamfir/datasets/image_restoration/NTIRE23SR/LR/3x/Test")
     parser.add_argument("--save-dir", type=str, default="./outputs")
     parser.add_argument("--submission-id", type=str, default="1234")
     parser.add_argument("--n-channels", type=int, default=3)
@@ -118,7 +118,7 @@ if __name__ == "__main__":
     parser.add_argument("--pin-memory", action="store_true")
     parser.add_argument("--checkpoint", type=str, default="checkpoint.pth")
     parser.add_argument("--crop-size", type=int, nargs="+", default=[2048, 1080])
-    parser.add_argument("--scale", type=int, default=2)
+    parser.add_argument("--scale", type=int, default=3)
     args = parser.parse_args()
         
     main(args)

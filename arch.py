@@ -994,15 +994,14 @@ class Swin2SR(nn.Module):
         return flops
 
 
-def srmodel():
+def srmodel(scale):
     """
     Define SRModel architecture here and return instance.
     """
-    upscale = 2
     window_size = 8
-    height = (1024 // upscale // window_size + 1) * window_size
-    width = (720 // upscale // window_size + 1) * window_size   
-    model = Swin2SR(upscale=upscale, in_chans=3, img_size=64, window_size=8,
+    height = (1024 // scale // window_size + 1) * window_size
+    width = (720 // scale // window_size + 1) * window_size   
+    model = Swin2SR(upscale=scale, in_chans=3, img_size=64, window_size=8,
                     img_range=1., depths=[6, 6, 6, 6, 6, 6], embed_dim=180, num_heads=[6, 6, 6, 6, 6, 6],
                     mlp_ratio=2, upsampler='pixelshuffle', resi_connection='1conv')
     return model
