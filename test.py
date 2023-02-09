@@ -3,6 +3,7 @@ import torch
 import pathlib
 import logging
 import argparse
+import torch.nn.functional as F
 
 from tqdm import tqdm
 from collections import OrderedDict
@@ -40,17 +41,18 @@ def main(args):
     """
     LOAD MODEL
     """
-    model_path = os.path.join(args.checkpoint)
-    model = srmodel(scale=args.scale)
-    model.load_state_dict(torch.load(model_path), strict=True)
-    model.eval()
-    for k, v in model.named_parameters():
-        v.requires_grad = False
-    model = model.to(device)
-    
-    # number of parameters
-    number_parameters = sum(map(lambda x: x.numel(), model.parameters()))
-    logger.info('Params number: {}'.format(number_parameters))
+    if not args.bicubic:
+        model_path = os.path.join(args.checkpoint)
+        model = srmodel(scale=args.scale)
+        model.load_state_dict(torch.load(model_path), strict=True)
+        model.eval()
+        for k, v in model.named_parameters():
+            v.requires_grad = False
+        model = model.to(device)
+        
+        # number of parameters
+        number_parameters = sum(map(lambda x: x.numel(), model.parameters()))
+        logger.info('Params number: {}'.format(number_parameters))
     
     
     """
@@ -82,7 +84,10 @@ def main(args):
 
         # forward pass
         start.record()
-        img_E = model(img_L)
+        if args.bicubic:
+            img_E = F.interpolate(img_L, scale_factor=args.scale, mode="bicubic", align_corners=False)
+        else:
+            img_E = model(img_L)
         end.record()
         torch.cuda.synchronize()
         test_results["runtime"].append(start.elapsed_time(end))  # milliseconds
@@ -94,14 +99,15 @@ def main(args):
         util.imsave(img_E, os.path.join(os.path.join(args.save_dir, args.submission_id, "results", img_name + ".png")))
     
     
-    input_dim = (3, 256, 256)  # set the input dimension
-    flops = get_model_flops(model, input_dim, False)
-    flops = flops / 10 ** 9
-    logger.info("{:>16s} : {:<.4f} [G]".format("FLOPs", flops))
+    if not args.bicubic:
+        input_dim = (3, args.crop_size[1]/args.scale, args.crop_size[1]/args.scale)  # set the input dimension
+        flops = get_model_flops(model, input_dim, False)
+        flops = flops / 10 ** 9
+        logger.info("{:>16s} : {:<.4f} [G]".format("FLOPs", flops))
 
-    num_parameters = sum(map(lambda x: x.numel(), model.parameters()))
-    num_parameters = num_parameters / 10 ** 6
-    logger.info("{:>16s} : {:<.4f} [M]".format("#Params", num_parameters))
+        num_parameters = sum(map(lambda x: x.numel(), model.parameters()))
+        num_parameters = num_parameters / 10 ** 6
+        logger.info("{:>16s} : {:<.4f} [M]".format("#Params", num_parameters))
 
     ave_runtime = sum(test_results["runtime"]) / len(test_results["runtime"]) / 1000.0
     logger.info('------> Average runtime of ({}) is : {:.6f} seconds'.format(args.submission_id, ave_runtime))
@@ -117,8 +123,9 @@ if __name__ == "__main__":
     parser.add_argument("--num-workers", type=int, default=8)
     parser.add_argument("--pin-memory", action="store_true")
     parser.add_argument("--checkpoint", type=str, default="checkpoint.pth")
-    parser.add_argument("--crop-size", type=int, nargs="+", default=[2048, 1080])
+    parser.add_argument("--crop-size", type=int, nargs="+", default=[1080, 2040])
     parser.add_argument("--scale", type=int, default=3)
+    parser.add_argument("--bicubic", action="store_true")
     args = parser.parse_args()
         
     main(args)
