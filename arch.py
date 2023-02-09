@@ -998,7 +998,7 @@ def srmodel():
     """
     Define SRModel architecture here and return instance.
     """
-    upscale = 4
+    upscale = 2
     window_size = 8
     height = (1024 // upscale // window_size + 1) * window_size
     width = (720 // upscale // window_size + 1) * window_size   
