@@ -6,8 +6,9 @@ import argparse
 
 from tqdm import tqdm
 from collections import OrderedDict
+from torch.utils.data import DataLoader
 
-
+import data.dataset as dd
 from arch import srmodel
 from utils import util_logger
 from utils import util_image as util
@@ -51,6 +52,14 @@ def main(args):
     number_parameters = sum(map(lambda x: x.numel(), model.parameters()))
     logger.info('Params number: {}'.format(number_parameters))
     
+    
+    """
+    SETUP DATALOADER
+    """
+    dataset = dd.SRDataset(lr_images_dir=args.lr_dir, n_channels=args.n_channels, transform=None)
+    dataloader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=True)
+    
+    
     """
     SETUP RUNTIME
     """
@@ -63,13 +72,11 @@ def main(args):
     """
     TESTING
     """
-    for img in tqdm(util.get_image_paths(args.lr_dir)):
+    for img_L, img_path in tqdm(dataloader):
         # get LR image
-        img_name, ext = os.path.splitext(os.path.basename(img))
+        img_name, ext = os.path.splitext(img_path[0])
 
         # load LR image
-        img_L = util.imread_uint(img, n_channels=3)
-        img_L = util.uint2tensor4(img_L)
         img_L = img_L.to(device)
 
         # forward pass
@@ -104,6 +111,10 @@ if __name__ == "__main__":
     parser.add_argument("--lr-dir", type=str, default="./testset")
     parser.add_argument("--save-dir", type=str, default="./outputs")
     parser.add_argument("--submission-id", type=str, default="1234")
+    parser.add_argument("--n-channels", type=int, default=3)
+    parser.add_argument("--batch-size", type=int, default=1)
+    parser.add_argument("--num-workers", type=int, default=8)
+    parser.add_argument("--pin-memory", action="store_true")
     parser.add_argument("--checkpoint", type=str, default="checkpoint.pth")
     args = parser.parse_args()
         

@@ -6,8 +6,10 @@ from typing import List, Callable, Tuple
 
 import torch
 import torch.nn as nn
+import torch.utils.data as data
 import torchvision.transforms as tf
 import torchvision.transforms.functional as F
+from utils import util_image as util
 
 
 # Transforms
@@ -82,25 +84,24 @@ class CenterCrop:
 
 
 # Dataset
-class SRDataset(nn.Dataset):
-    def __init__(self, lr_images_dir, hr_images_dir, transform=None):
+class SRDataset(data.Dataset):
+    def __init__(self, lr_images_dir, transform=None, n_channels=3):
         self.lr_images_dir = lr_images_dir
-        self.hr_images_dir = hr_images_dir
-        self.transform = transform
         self.lr_images = os.listdir(lr_images_dir)
-        self.hr_images = os.listdir(hr_images_dir)
+        self.transform = transform
+        self.n_channels = n_channels
 
     def __len__(self):
         return len(self.lr_images)
 
     def __getitem__(self, index):
-        lr_image_path = os.path.join(self.lr_images_dir, self.lr_images[index])
-        hr_image_path = os.path.join(self.hr_images_dir, self.hr_images[index])
+        img_path = os.path.join(self.lr_images_dir, self.lr_images[index])
+       
+        img_L = util.imread_uint(img_path, n_channels=self.n_channels)
+        img_L = util.uint2tensor3(img_L)
 
-        lr_image = Image.open(lr_image_path)
-        hr_image = Image.open(hr_image_path)
 
         if self.transform:
-            lr_image, hr_image = self.transform(lr_image, hr_image)
+            img_L = self.transform(img_L)
 
-        return lr_image, hr_image, self.lr_images[index]
+        return img_L, self.lr_images[index]

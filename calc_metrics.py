@@ -63,13 +63,13 @@ def main(args):
 
 
     ave_psnr_rgb = sum(test_results["psnr_rgb"]) / len(test_results["psnr_rgb"])
-    logger.info('------> Average PSNR (RGB) of ({}) is : {:.6f} seconds'.format(args.submission_id, ave_psnr_rgb))
+    logger.info('------> Average PSNR (RGB) of ({}) is : {:.6f} dB'.format(args.submission_id, ave_psnr_rgb))
     ave_ssim_rgb = sum(test_results["ssim_rgb"]) / len(test_results["ssim_rgb"])
-    logger.info('------> Average SSIM (RGB) of ({}) is : {:.6f} seconds'.format(args.submission_id, ave_ssim_rgb))
+    logger.info('------> Average SSIM (RGB) of ({}) is : {:.6f}'.format(args.submission_id, ave_ssim_rgb))
     ave_psnr_y = sum(test_results["psnr_y"]) / len(test_results["psnr_y"])
-    logger.info('------> Average PSNR (Y) of ({}) is : {:.6f} seconds'.format(args.submission_id, ave_psnr_y))
+    logger.info('------> Average PSNR (Y) of ({}) is : {:.6f} dB'.format(args.submission_id, ave_psnr_y))
     ave_ssim_y = sum(test_results["ssim_y"]) / len(test_results["ssim_y"]) 
-    logger.info('------> Average SSIM (Y) of ({}) is : {:.6f} seconds'.format(args.submission_id, ave_ssim_y))
+    logger.info('------> Average SSIM (Y) of ({}) is : {:.6f}'.format(args.submission_id, ave_ssim_y))
 
         
         
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--gt-dir", type=str)
     parser.add_argument("--save-dir", type=str, default="./outputs")
-    parser.add_argument("--submission-id", type=str, default=1234)
+    parser.add_argument("--submission-id", type=str, default="1234")
     args = parser.parse_args()
     
     main(args)
