@@ -23,17 +23,53 @@ The submitted methods will be tested to ensure they satisfy real-time processing
 We degrade the high-resolution images with bicubic downsampling and JPEG compression. You can generate the low-resolution counterparts using following command.
 
 ````
-python data/prepare_data.py --image-dir [IMAGE-ROOT] --lr-out-dir [LR-OUT-ROOT] --gt-out-dir [GT-OUT-DIR] --downsample-factor 4 --jpeg-level 90
+python demo/data/prepare_data.py --image-dir [IMAGE-ROOT] --lr-out-dir [LR-OUT-ROOT] --gt-out-dir [GT-OUT-DIR] --downsample-factor 4 --jpeg-level 90
 ````
 
 **Test SR Model**
 
 We run this file to generate SR outputs using your method and compute FLOPs and runtime. We save the outputs and compute the metrics offline.
 ````
-python test.py --lr-dir [LR-ROOT] --save-dir [RESULTS-ROOT] --submission-id [SUBMISSION-ID] --checkpoint [CHECKPOINT] --scale [SCALE] --batch-size [BATCH-SIZE] --num-workers [NUM-WORKERS]
+python demo/test.py --lr-dir [LR-ROOT] --save-dir [RESULTS-ROOT] --submission-id [SUBMISSION-ID] --checkpoint [CHECKPOINT] --scale [SCALE] --batch-size [BATCH-SIZE] --num-workers [NUM-WORKERS]
 ````
 
 We run this file to calculate PSRN/SSIM (RGB and Y-Channel) metrics.
 ````
-python calc_metrics.py --gt-dir [GT-ROOT] --save-dir [RESULTS-ROOT] --submission-id [SUBMISSION-ID]
+python demo/calc_metrics.py --gt-dir [GT-ROOT] --save-dir [RESULTS-ROOT] --submission-id [SUBMISSION-ID]
 ````
+
+
+## **Evaluation of your submission**
+
+We request that you submit a ```submission_{submission-id}.zip``` file, which should include the following components:
+
+```
+submission_{submission-id}.zip/
+|--- arch.py
+|--- utils/
+|    |--- modules.py
+     |--- config.yaml
+     ...
+|--- checkpoint.pth
+|--- results/
+|    |--- 1.png
+|    |--- 2.png
+     ...
+|--- requirements.txt
+```
+
+* ```arch.py```: This file contains your network architecture. Additionally, we request a simple ```srmodel()``` method which returns an instance of your method initialized from your submitted ```checkpoint.pth``` file. In case you are submitting multiple checkpoints, we select a single file randomly. 
+* ```utils/```: You may have an additional directoy ```utils/``` containing necessary scipts and files to run your model. Please be aware that we expect ```srmodel()``` to return your method with correct configuration, checkpoint etc. **without** input arguments.
+* ```results/```: This directory contains your SR outputs saved as ```.png``` files. We calculate PSRN/SSIM metrics using your provided super-resolved images and compare to our internal evaluation of your method using ```test.py```.
+* ```requirements.txt```: Please provide an ```requirements.txt``` file in case you use additional libraries besides the ones described in **our** ```requirements.txt``` file.
+
+### Evalutation procedure
+
+We compute our metrics using ```calc_metrics.py``` and the SR outputs you provide in ```results/```. Please ensure that you adhere to our naming conventions. We report average PSNR/SSIM on RGB and Y-Channel.
+```
+python calc_metrics.py --submission-id [YOUR-SUBMISSION-ID] --sr-dir ./results --gt-dir [PATH-TO-OUR-GT]
+```
+Next, we use ```test.py``` to compute the super-resolved outputs of your submitted method. The SR images will be saved to ```internal/```. Besides, we compute the average runtime of your model per image and report FLOPs.
+```
+python test.py --submission-id [YOUR-SUBMISSION-ID] --checkpoint [PATH-TO-YOUR-CHECKPOINT] --scale [2|3] --lr-dir [PATH-TO-OUR-LR]
+``` 

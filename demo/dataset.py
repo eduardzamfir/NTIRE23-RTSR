@@ -59,7 +59,7 @@ class CenterCrop:
 class SRDataset(data.Dataset):
     def __init__(self, lr_images_dir, transform=None, n_channels=3):
         self.lr_images_dir = lr_images_dir
-        self.lr_images = os.listdir(lr_images_dir)
+        self.lr_images = sorted(os.listdir(lr_images_dir))
         self.transform = transform
         self.n_channels = n_channels
 

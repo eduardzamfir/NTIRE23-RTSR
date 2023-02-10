@@ -7,7 +7,6 @@ from tqdm import tqdm
 from collections import OrderedDict
 
 
-from arch import srmodel
 from utils import util_logger
 from utils import util_image as util
 from utils.model_summary import get_model_flops
@@ -18,7 +17,7 @@ def main(args):
     """
     SETUP LOGGER
     """
-    util_logger.logger_info("NTIRE2023-Real-Time-SR", log_path=os.path.join(args.save_dir, args.submission_id, f"Submission_{args.submission_id}.txt"))
+    util_logger.logger_info("NTIRE2023-Real-Time-SR", log_path=os.path.join(args.sr_dir, args.submission_id, f"Submission_{args.submission_id}.txt"))
     logger = logging.getLogger("NTIRE2023-Real-Time-SR")
     
     """
@@ -33,7 +32,7 @@ def main(args):
     """
     SETUP DIRS
     """
-    sr_images = util.get_image_paths(os.path.join(args.save_dir, args.submission_id, "results"))
+    sr_images = util.get_image_paths(os.path.join(args.sr_dir, args.submission_id, "results"))
     hr_images = util.get_image_paths(args.gt_dir)
     
     """
@@ -76,7 +75,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--gt-dir", type=str)
-    parser.add_argument("--save-dir", type=str, default="./outputs")
+    parser.add_argument("--sr-dir", type=str, default="./results")
     parser.add_argument("--submission-id", type=str, default="bicubic_x2")
     args = parser.parse_args()
     

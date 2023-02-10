@@ -9,7 +9,7 @@ from tqdm import tqdm
 from collections import OrderedDict
 from torch.utils.data import DataLoader
 
-import data.dataset as dd
+import dataset as dd
 from arch import srmodel
 from utils import util_logger
 from utils import util_image as util
@@ -58,7 +58,7 @@ def main(args):
     """
     SETUP DATALOADER
     """
-    dataset = dd.SRDataset(lr_images_dir=args.lr_dir, n_channels=args.n_channels, transform=None)
+    dataset = dd.SRDataset(lr_images_dir=args.lr_dir, n_channels=3, transform=None)
     dataloader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=True)
     
     
@@ -82,22 +82,28 @@ def main(args):
         img_L = img_L.to(device)
 
         # forward pass
-        start.record()
         if args.bicubic:
             img_E = F.interpolate(img_L, scale_factor=args.scale, mode="bicubic", align_corners=False)
         else:
             img_E = model(img_L)
-        end.record()
-        torch.cuda.synchronize()
-        test_results["runtime"].append(start.elapsed_time(end))  # milliseconds
-
+            
         # postprocess
         img_E = util.tensor2uint(img_E)
         
         # save model output
         util.imsave(img_E, os.path.join(os.path.join(args.save_dir, args.submission_id, "results", img_name + ".png")))
-    
-    
+        
+        # compute runtime
+        time = 0
+        for _ in range(args.repeat):
+            start.record()
+            img_E = model(img_L)
+            end.record()
+            torch.cuda.synchronize()
+            time += start.elapsed_time(end)
+            
+        test_results["runtime"].append(time/args.repeat)  # milliseconds
+
     if not args.bicubic:
         input_dim = (3, args.crop_size[1]/args.scale, args.crop_size[1]/args.scale)  # set the input dimension
         flops = get_model_flops(model, input_dim, False)
@@ -114,16 +120,15 @@ def main(args):
         
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--submission-id", type=str)
+    parser.add_argument("--checkpoint", type=str, default="checkpoint.pth")
+    parser.add_argument("--scale", type=int, default=2)
     parser.add_argument("--lr-dir", type=str)
-    parser.add_argument("--save-dir", type=str, default="./outputs")
-    parser.add_argument("--submission-id", type=str, default="1234")
-    parser.add_argument("--n-channels", type=int, default=3)
+    parser.add_argument("--save-dir", type=str, default="internal")
+    parser.add_argument("--repeat", type=int, default=5)
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--num-workers", type=int, default=8)
-    parser.add_argument("--pin-memory", action="store_true")
-    parser.add_argument("--checkpoint", type=str, default="model_zoo/checkpoint.pth")
     parser.add_argument("--crop-size", type=int, nargs="+", default=[1080, 2040])
-    parser.add_argument("--scale", type=int, default=3)
     parser.add_argument("--bicubic", action="store_true")
     args = parser.parse_args()
         
