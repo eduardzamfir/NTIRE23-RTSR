@@ -1,6 +1,6 @@
 numpy==1.23.4
 opencv-python==4.6.0.66
-pip==22.3.1 
+pillow==9.2.0
 scikit-image==0.19.3                
 scipy==1.9.3
 timm==0.6.12
