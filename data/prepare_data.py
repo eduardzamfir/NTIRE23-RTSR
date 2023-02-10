@@ -28,7 +28,7 @@ def main(args):
         assert h % args.downsample_factor == 0
         
         # bicubic downsampling
-        img = img.resize((int(w/args.downsample_factor), int(h/args.downsample_factor)), resample=Image.BICUBIC)
+        img = img.resize((int(w/args.downsample_factor), int(h/args.downsample_factor)), resample=Image.Resampling.BICUBIC)
         
         if ext == ".jpg":
             img.save(os.path.join(args.lr_out_dir, f"{img_name}.jpg"), "JPEG", quality=100)
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     parser.add_argument("--lr-out-dir", type=str)
     parser.add_argument("--jpeg-level", type=int, default=90)
     parser.add_argument("--downsample-factor", type=int, default=2)
-    parser.add_argument("--crop-size", type=str, default=[1080, 2040], nargs="+")
+    parser.add_argument("--crop-size", type=int, default=[1080, 2040], nargs="+")
     args = parser.parse_args()
     
     main(args)
