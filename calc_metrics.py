@@ -75,9 +75,9 @@ def main(args):
         
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--gt-dir", type=str, default="/home/eduardzamfir/datasets/image_restoration/NTIRE23SR/GT/Test")
+    parser.add_argument("--gt-dir", type=str)
     parser.add_argument("--save-dir", type=str, default="./outputs")
-    parser.add_argument("--submission-id", type=str, default="1234")
+    parser.add_argument("--submission-id", type=str, default="bicubic_x2")
     args = parser.parse_args()
     
     main(args)

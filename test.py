@@ -58,7 +58,6 @@ def main(args):
     """
     SETUP DATALOADER
     """
-    #transforms = dd.Compose([dd.CenterCrop(crop_size=args.crop_size)])
     dataset = dd.SRDataset(lr_images_dir=args.lr_dir, n_channels=args.n_channels, transform=None)
     dataloader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=True)
     
@@ -122,7 +121,7 @@ if __name__ == "__main__":
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--num-workers", type=int, default=8)
     parser.add_argument("--pin-memory", action="store_true")
-    parser.add_argument("--checkpoint", type=str, default="checkpoint.pth")
+    parser.add_argument("--checkpoint", type=str, default="model_zoo/checkpoint.pth")
     parser.add_argument("--crop-size", type=int, nargs="+", default=[1080, 2040])
     parser.add_argument("--scale", type=int, default=3)
     parser.add_argument("--bicubic", action="store_true")
