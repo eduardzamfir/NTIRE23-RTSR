@@ -26,19 +26,6 @@ We degrade the high-resolution images with bicubic downsampling and JPEG compres
 python demo/data/prepare_data.py --image-dir [IMAGE-ROOT] --lr-out-dir [LR-OUT-ROOT] --gt-out-dir [GT-OUT-DIR] --downsample-factor 4 --jpeg-level 90
 ````
 
-**Test SR Model**
-
-We run this file to generate SR outputs using your method and compute FLOPs and runtime. We save the outputs and compute the metrics offline.
-````
-python demo/test.py --lr-dir [LR-ROOT] --save-dir [RESULTS-ROOT] --submission-id [SUBMISSION-ID] --checkpoint [CHECKPOINT] --scale [SCALE] --batch-size [BATCH-SIZE] --num-workers [NUM-WORKERS]
-````
-
-We run this file to calculate PSRN/SSIM (RGB and Y-Channel) metrics.
-````
-python demo/calc_metrics.py --gt-dir [GT-ROOT] --save-dir [RESULTS-ROOT] --submission-id [SUBMISSION-ID]
-````
-
-
 ## **Evaluation of your submission**
 
 We request that you submit a ```submission_{submission-id}.zip``` file, which should include the following components:
