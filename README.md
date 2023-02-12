@@ -35,13 +35,13 @@ submission_{submission-id}.zip/
 |--- arch.py
 |--- utils/
 |    |--- modules.py
-     |--- config.yaml
-     ...
+|    |--- config.yaml
+|    ...
 |--- checkpoint.pth
 |--- results/
 |    |--- 1.png
 |    |--- 2.png
-     ...
+|    ...
 |--- requirements.txt
 ```
 
