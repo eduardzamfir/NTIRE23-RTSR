@@ -70,7 +70,7 @@ We use the script `test.py` to measure the runtime performance of the baseline m
 |[**IMDN**](https://github.com/ofsoundof/IMDN) | RTX 3090 24 Gb | in sec.  | 0.092204 | 0.046445 | 
 |                                              | RTX 3060 12 Gb | in sec.  | 0.238681 | 0.118506 |
 |[**RFDN**](https://github.com/ofsoundof/IMDN) | RTX 3090 24 Gb | in sec.  | 0.055507 | 0.037806 |
-|                                              | RTX 3060 12 Gb | in sec.  | 0,143686 | 0,096463 |
+|                                              | RTX 3060 12 Gb | in sec.  | 0.143686 | 0.096463 |
                                                
 
 Further, we want to show the PSNR differences between running models using FP16/FP32. As IMDN and RFDN methods are designed/trained on X4 super-resolution, we use [Swin2SR](https://github.com/mv-lab/swin2sr) for that. Note that models are evaluated using MP FP16, this might affect the performance of the models if not trained using MP, see below.
