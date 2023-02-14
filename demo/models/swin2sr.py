@@ -2,7 +2,7 @@
 # Swin2SR: Swin2SR: SwinV2 Transformer for Compressed Image Super-Resolution and Restoration, https://arxiv.org/abs/2209.11345
 # Written by Conde and Choi et al.
 # -----------------------------------------------------------------------------------
-
+import os
 import math
 import numpy as np
 import torch
@@ -141,7 +141,7 @@ class WindowAttention(nn.Module):
         B_, N, C = x.shape
         qkv_bias = None
         if self.q_bias is not None:
-            qkv_bias = torch.cat((self.q_bias, torch.zeros_like(self.v_bias, requires_grad=False), self.v_bias))
+            qkv_bias = torch.cat((self.q_bias, torch.zeros_like(self.v_bias, requires_grad=False, dtype=torch.float16), self.v_bias))
         qkv = F.linear(input=x, weight=self.qkv.weight, bias=qkv_bias)
         qkv = qkv.reshape(B_, N, 3, self.num_heads, -1).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
@@ -994,16 +994,20 @@ class Swin2SR(nn.Module):
         return flops
 
 
-def srmodel(scale):
+def swin2sr():
     """
     Define SRModel architecture here and return instance.
     """
     window_size = 8
+    scale = 2
     height = (1024 // scale // window_size + 1) * window_size
     width = (720 // scale // window_size + 1) * window_size   
     model = Swin2SR(upscale=scale, in_chans=3, img_size=64, window_size=8,
                     img_range=1., depths=[6, 6, 6, 6, 6, 6], embed_dim=180, num_heads=[6, 6, 6, 6, 6, 6],
                     mlp_ratio=2, upsampler='pixelshuffle', resi_connection='1conv')
+    
+    checkpoint_path = os.path.join(os.getcwd(), "demo/model_zoo", "swin2sr_X2.pth")
+    model.load_state_dict(torch.load(checkpoint_path), strict=True)
     return model
 
 

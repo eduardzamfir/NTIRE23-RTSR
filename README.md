@@ -60,3 +60,18 @@ Next, we use ```test.py``` to compute the super-resolved outputs of your submitt
 ```
 python test.py --submission-id [YOUR-SUBMISSION-ID] --checkpoint [PATH-TO-YOUR-CHECKPOINT] --scale [2|3] --lr-dir [PATH-TO-OUR-LR]
 ``` 
+
+### Performance of baseline methods
+
+We use the script `test.py` to measure the runtime performance of the baseline models. We use GPU warm-up and average the runtime over `n=100` repetitions. Results are listed below.
+
+| Method                                       | GPU            | Runtime  | FP32     | FP16     |
+|----------------------------------------------|----------------|----------|----------|----------|
+|[**IMDN**](https://github.com/ofsoundof/IMDN) | RTX 3090 24 Gb | in sec.  | 0.092204 | 0.046445 | 
+|[**RFDN**](https://github.com/ofsoundof/IMDN) | RTX 3090 24 Gb | in sec.  | 0.055507 | 0.037806 |
+
+Further, we want to show the PSNR differences between running models using FP16/FP32. As IMDN and RFDN methods are designed/trained on X4 super-resolution, we use [Swin2SR](https://github.com/mv-lab/swin2sr) for that. Note that models are evaluated using MP FP16, this might affect the performance of the models if not trained using MP, see below.
+
+| Method                                          | PNSR  | FP32  | FP16  |
+|-------------------------------------------------|-------|-------|-------|
+|[**Swin2SR**](https://github.com/mv-lab/swin2sr) | in dB | 32.38 | 28.05 |
