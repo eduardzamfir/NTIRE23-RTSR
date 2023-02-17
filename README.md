@@ -78,7 +78,7 @@ We use the script `test.py` to measure the runtime performance of the baseline m
 |                                              | RTX 3060 12 Gb | in ms    | 137.65   | 94.66    |
                                                
 
-Further, we want to show the PSNR differences between running models using `FP16` or `FP32`. As `IMDN` and `RFDN` methods are designed/trained on `X4` super-resolution, we use [Swin2SR](https://github.com/mv-lab/swin2sr) for that. Note that models are evaluated using `FP16`, this might affect the performance of the models if not trained using `MP`, see below. In case for `IMDN` and `RFDN` we did not experience any artefacts when producing SR outputs with `FP16` (using `X4 SR checkpoints for testing purposes).
+Further, we want to show the PSNR differences between running models using `FP16` or `FP32`. As `IMDN` and `RFDN` methods are designed/trained on `X4` super-resolution, we use [Swin2SR](https://github.com/mv-lab/swin2sr) for that. Note that models are evaluated using `FP16`, this might affect the performance of the models if not trained using `MP`, see below. In case for `IMDN` and `RFDN` we did not experience any artefacts when producing SR outputs with `FP16` (using `X4` SR checkpoints for testing purposes).
 
 | Method                                          | PSNR (RGB) | FP32  | FP16  |
 |-------------------------------------------------|------------|-------|-------|
