@@ -95,7 +95,7 @@ def main(args):
         logger.info('------> Average runtime of ({}) is : {:.6f} ms'.format(args.submission_id, ave_runtime / args.batch_size))
         
         
-        input_dim = (3, int(args.crop_size[1]/args.scale), int(args.crop_size[1]/args.scale))
+        input_dim = (3, int(args.crop_size[0]), int(args.crop_size[1]))
         flops = get_model_flops(model, input_dim, print_per_layer_stat=False)
         flops = flops / 10 ** 9
         logger.info("{:>16s} : {:<.4f} [G]".format("FLOPs", flops))
