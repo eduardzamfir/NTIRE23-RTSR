@@ -32,8 +32,8 @@ def get_model_flops(model, input_res, print_per_layer_stat=True,
         input = input_constructor(input_res)
         _ = flops_model(**input)
     else:
-        device = list(flops_model.parameters())[-1].device
-        batch = torch.FloatTensor(1, *input_res).to(device)
+        device = list(flops_model.parameters())[-1].device       
+        batch = torch.Tensor(1, *input_res).type(next(model.parameters()).dtype).to(device)
         _ = flops_model(batch)
 
     if print_per_layer_stat:

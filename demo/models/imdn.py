@@ -71,6 +71,6 @@ def imdn():
     model = IMDN(in_nc=3, out_nc=3, nc=64, nb=8, upscale=2)
     
     # we use random init as X2 checkpoints are not available, we care only about runtime for this baseline
-    #checkpoint_path = os.path.join(os.getcwd(), "demo/model_zoo", "imdn_X4.pth")
-    #model.load_state_dict(torch.load(checkpoint_path), strict=True)
+    # checkpoint_path = os.path.join(os.getcwd(), "demo/model_zoo", "imdn_X4.pth")
+    # model.load_state_dict(torch.load(checkpoint_path), strict=True)
     return model

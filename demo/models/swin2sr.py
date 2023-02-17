@@ -31,7 +31,7 @@ class Mlp(nn.Module):
         return x
 
 
-def window_partition(x, window_size):
+def window_partition(x, window_size) -> torch.Tensor:
     """
     Args:
         x: (B, H, W, C)
@@ -141,7 +141,7 @@ class WindowAttention(nn.Module):
         B_, N, C = x.shape
         qkv_bias = None
         if self.q_bias is not None:
-            qkv_bias = torch.cat((self.q_bias, torch.zeros_like(self.v_bias, requires_grad=False, dtype=torch.float16), self.v_bias))
+            qkv_bias = torch.cat((self.q_bias, torch.zeros_like(self.v_bias, dtype=torch.float16).requires_grad_(False), self.v_bias))
         qkv = F.linear(input=x, weight=self.qkv.weight, bias=qkv_bias)
         qkv = qkv.reshape(B_, N, 3, self.num_heads, -1).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
@@ -1012,11 +1012,11 @@ def swin2sr():
 
 
 if __name__ == '__main__':
-    upscale = 4
+    upscale = 2
     window_size = 8
     height = (1024 // upscale // window_size + 1) * window_size
     width = (720 // upscale // window_size + 1) * window_size
-    model = Swin2SR(upscale=2, img_size=(height, width),
+    model = Swin2SR(upscale=upscale, img_size=(height, width),
                    window_size=window_size, img_range=1., depths=[6, 6, 6, 6],
                    embed_dim=60, num_heads=[6, 6, 6, 6], mlp_ratio=2, upsampler='pixelshuffledirect')
     print(model)

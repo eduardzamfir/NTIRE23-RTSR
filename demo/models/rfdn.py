@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn as nn
 import models.modules._rfdn as B
@@ -48,6 +49,6 @@ def rfdn():
     model = RFDN(upscale=2)
     
     # we use random init as X2 checkpoints are not available, we care only about runtime for this baseline
-    #checkpoint_path = os.path.join(os.getcwd(), "demo/model_zoo", "rfdn_X4.pth")
-    #model.load_state_dict(torch.load(checkpoint_path), strict=True)
+    # checkpoint_path = os.path.join(os.getcwd(), "demo/model_zoo", "rfdn_X4.pth")
+    # model.load_state_dict(torch.load(checkpoint_path), strict=True)
     return model

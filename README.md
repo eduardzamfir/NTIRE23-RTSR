@@ -49,31 +49,36 @@ submission_{submission-id}.zip/
 * ```utils/```: You may have an additional directory ```utils/``` containing necessary scripts and files to run your model. Please be aware that we expect ```srmodel()``` to return your method with correct configuration, checkpoint etc. **without** input arguments.
 * ```results/```: This directory contains your SR outputs saved as ```.png``` files. We calculate PSNR/SSIM metrics using your provided super-resolved images and compare to our internal evaluation of your method using ```test.py```.
 * ```requirements.txt```: Please provide an ```requirements.txt``` file in case you use additional libraries besides the ones described in **our** ```requirements.txt``` file.
+* We added in ```demo/``` a ```submission_test.zip``` as example.
 
 ### Evalutation procedure
 
 We compute our metrics using ```calc_metrics.py``` and the SR outputs you provide in ```results/```. Please ensure that you adhere to our naming conventions. We report average PSNR/SSIM on RGB and Y-Channel.
 ```
-python calc_metrics.py --submission-id [YOUR-SUBMISSION-ID] --sr-dir ./results --gt-dir [PATH-TO-OUR-GT]
+python demo/calc_metrics.py --submission-id [YOUR-SUBMISSION-ID] --sr-dir ./results --gt-dir [PATH-TO-OUR-GT]
 ```
-Next, we use ```test.py``` to compute the super-resolved outputs of your submitted method. The SR images will be saved to ```internal/```. Besides, we compute the average runtime of your model per image and report FLOPs.
+Next, we use ```sr_demo.py``` to compute the super-resolved outputs of your submitted method. The SR images will be saved to ```internal/```.
 ```
-python test.py --submission-id [YOUR-SUBMISSION-ID] --checkpoint [PATH-TO-YOUR-CHECKPOINT] --scale [2|3] --lr-dir [PATH-TO-OUR-LR]
+python demo/sr_demo.py --submission-id [YOUR-SUBMISSION-ID] --checkpoint [PATH-TO-YOUR-CHECKPOINT] --scale [2|3] --lr-dir [PATH-TO-OUR-LR] --save-sr
 ``` 
+We compute the average runtime of your model per image and report FLOPs with ```demo/runtime_demo.py``` using ```FP32``` and ```FP16```.
+```
+python demo/runtime_demo.py --submission-id [YOUR-SUBMISSION-ID] --model-name [YOUR-MODEL-NAME]
+```
 
 ### Performance of baseline methods
 
-We use the script `test.py` to measure the runtime performance of the baseline models. We use GPU warm-up and average the runtime over `n=100` repetitions. Results are listed below.
+We use the script `test.py` to measure the runtime performance of the baseline models. We use GPU warm-up and average the runtime over `n=244` repetitions. Results are listed below.
 
-| Method                                       | GPU            | Runtime  | FP32     | FP16     |
+| Method                                       | GPU            | Runtime  | FP32     | FP16     | 
 |----------------------------------------------|----------------|----------|----------|----------|
-|[**IMDN**](https://github.com/ofsoundof/IMDN) | RTX 3090 24 Gb | in sec.  | 0.092204 | 0.046445 | 
-|                                              | RTX 3060 12 Gb | in sec.  | 0.238681 | 0.118506 |
-|[**RFDN**](https://github.com/ofsoundof/IMDN) | RTX 3090 24 Gb | in sec.  | 0.055507 | 0.037806 |
-|                                              | RTX 3060 12 Gb | in sec.  | 0.143686 | 0.096463 |
+|[**IMDN**](https://github.com/ofsoundof/IMDN) | RTX 3090 24 Gb | in ms    | 73.29    | 47.27    |
+|                                              | RTX 3060 12 Gb | in ms    | 180.15   | 117.67   |
+|[**RFDN**](https://github.com/ofsoundof/IMDN) | RTX 3090 24 Gb | in ms    | 55.54    | 38.19    |
+|                                              | RTX 3060 12 Gb | in ms    | 137.65   | 94.66    |
                                                
 
-Further, we want to show the PSNR differences between running models using FP16/FP32. As IMDN and RFDN methods are designed/trained on X4 super-resolution, we use [Swin2SR](https://github.com/mv-lab/swin2sr) for that. Note that models are evaluated using MP FP16, this might affect the performance of the models if not trained using MP, see below.
+Further, we want to show the PSNR differences between running models using FP16/FP32. As IMDN and RFDN methods are designed/trained on X4 super-resolution, we use [Swin2SR](https://github.com/mv-lab/swin2sr) for that. Note that models are evaluated using MP FP16, this might affect the performance of the models if not trained using MP, see below. In case for IMDN and RFDN we did not experience any artefacts when producing SR outputs with FP16 (using X4 SR checkpoints for testing purposes).
 
 | Method                                          | PSNR (RGB) | FP32  | FP16  |
 |-------------------------------------------------|------------|-------|-------|
