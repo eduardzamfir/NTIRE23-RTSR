@@ -70,16 +70,20 @@ python demo/runtime_demo.py --submission-id [YOUR-SUBMISSION-ID] --model-name [Y
 
 We use the script `test.py` to measure the runtime performance of the baseline models. We use GPU warm-up and average the runtime over `n=244` repetitions. Results are listed below.
 
-| Method                                       | GPU            | Runtime  | FP32     | FP16     | 
-|----------------------------------------------|----------------|----------|----------|----------|
-|[**IMDN**](https://github.com/ofsoundof/IMDN) | RTX 3090 24 Gb | in ms    | 73.29    | 47.27    |
-|                                              | RTX 3060 12 Gb | in ms    | 180.15   | 117.67   |
-|[**RFDN**](https://github.com/ofsoundof/IMDN) | RTX 3090 24 Gb | in ms    | 55.54    | 38.19    |
-|                                              | RTX 3060 12 Gb | in ms    | 137.65   | 94.66    |
+| Method                                       | GPU            | Runtime  | Resolution | FP32     | FP16     | 
+|----------------------------------------------|----------------|----------|------------|----------|----------|
+|[**IMDN**](https://github.com/ofsoundof/IMDN) | RTX 3090 24 Gb | in ms    | X2 -> 2K   | 73.29    | 47.27    |
+|                                              |                |          | X2 -> 4K   | 273.47   | 170.10   |     
+|                                              | RTX 3060 12 Gb | in ms    | X2 -> 2K   | 180.15   | 117.67   |
+|                                              |                |          | X2 -> 4K   | 666.61   | 438.31   |      
+|[**RFDN**](https://github.com/ofsoundof/IMDN) | RTX 3090 24 Gb | in ms    | X2 -> 2K   | 55.54    | 38.19    |
+|                                              |                |          | X2 -> 4K   | 203.63   | 135.99   |      
+|                                              | RTX 3060 12 Gb | in ms    | X2 -> 2K   | 137.65   | 94.66    |
+|                                              |                |          | X2 -> 4K   | 517.35   | 348.40   |      
                                                
 
 Further, we want to show the PSNR differences between running models using `FP16` and `FP32`. As `IMDN` and `RFDN` methods are designed/trained on `X4` super-resolution, we use [Swin2SR](https://github.com/mv-lab/swin2sr) for that. Note that models are evaluated using `FP16`, this might affect the performance of the models if not trained using `MP`, see below. In case for `IMDN` and `RFDN` we did not experience any artefacts when producing SR outputs with `FP16` (using `X4` SR checkpoints for testing purposes).
 
-| Method                                          | PSNR (RGB) | FP32  | FP16  |
-|-------------------------------------------------|------------|-------|-------|
-|[**Swin2SR**](https://github.com/mv-lab/swin2sr) | in dB      | 32.38 | 28.05 |
+| Method                                          | PSNR (RGB) | Resolution | FP32  | FP16  |
+|-------------------------------------------------|------------|------------|-------|-------|
+|[**Swin2SR**](https://github.com/mv-lab/swin2sr) | in dB      | X2 -> 2K   | 32.38 | 28.05 |

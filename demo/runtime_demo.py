@@ -66,7 +66,7 @@ def main(args):
     """
     TESTING
     """  
-    input_data = torch.randn((1, 3, args.crop_size[0], args.crop_size[1])).to(device)
+    input_data = torch.randn((1, 3, args.crop_size[0]//args.scale, args.crop_size[1]//args.scale)).to(device)
     
     if args.fp16:
         input_data = input_data.half()
@@ -95,7 +95,7 @@ def main(args):
         logger.info('------> Average runtime of ({}) is : {:.6f} ms'.format(args.submission_id, ave_runtime / args.batch_size))
         
         
-        input_dim = (3, int(args.crop_size[0]), int(args.crop_size[1]))
+        input_dim = (3, int(args.crop_size[0]/args.scale), int(args.crop_size[1]/args.scale))
         flops = get_model_flops(model, input_dim, print_per_layer_stat=False)
         flops = flops / 10 ** 9
         logger.info("{:>16s} : {:<.4f} [G]".format("FLOPs", flops))
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     parser.add_argument("--scale", type=int, default=2)
     parser.add_argument("--repeat", type=int, default=244)
     parser.add_argument("--batch-size", type=int, default=1)
-    parser.add_argument("--crop-size", type=int, nargs="+", default=[1020, 540])
+    parser.add_argument("--crop-size", type=int, nargs="+", default=[3840, 2160], help="We use 4K images for final testing. During the development phase we provide a validation set with GT size of [2040, 1080].")
     parser.add_argument("--fp16", action="store_true")
 
     args = parser.parse_args()
