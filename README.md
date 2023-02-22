@@ -74,7 +74,7 @@ We use the script `test.py` to measure the runtime performance of the baseline m
 
 | Method                                                                                    | GPU            | Runtime  | Resolution   | FP32     | **FP16**   | TensorRT FP16 | 
 |-------------------------------------------------------------------------------------------|----------------|----------|--------------|----------|------------|---------------|
-|[**RTSRB**](https://github.com/eduardzamfir/NTIRE23-RTSR/blob/master/demo/models/rtsrn.py) | RTX 3090 24 Gb | in ms    | 1080p -> 4K  | 44.83    | **27.86**  |    11.26      |
+|[**RTSRN**](https://github.com/eduardzamfir/NTIRE23-RTSR/blob/master/demo/models/rtsrn.py) | RTX 3090 24 Gb | in ms    | 1080p -> 4K  | 44.83    | **27.86**  |    11.26      |
 |                                                                                           |                |          | 720p  -> 4K  | 19.77    | **12.19**  |    5.41       |  
 
 **NOTE:** The scoring is done based on the FP16 performance without TensorRT. We specify the versions used of TensorRT below, in case you want to run your method with TensorRT. You can find an example [here](https://github.com/pytorch/TensorRT/blob/main/notebooks/EfficientNet-example.ipynb).
