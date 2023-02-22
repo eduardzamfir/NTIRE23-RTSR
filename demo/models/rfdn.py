@@ -45,8 +45,8 @@ class RFDN(nn.Module):
         self.scale_idx = scale_idx
         
         
-def rfdn():
-    model = RFDN(upscale=2)
+def rfdn(scale):
+    model = RFDN(upscale=scale)
     
     # we use random init as X2 checkpoints are not available, we care only about runtime for this baseline
     # checkpoint_path = os.path.join(os.getcwd(), "demo/model_zoo", "rfdn_X4.pth")

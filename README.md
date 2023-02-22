@@ -51,6 +51,7 @@ submission_{submission-id}.zip/
 * ```requirements.txt```: Please provide an ```requirements.txt``` file in case you use additional libraries besides the ones described in **our** ```requirements.txt``` file.
 * We added in ```demo/``` a ```submission_test.zip``` as example.
 
+
 ### Evalutation procedure
 
 We compute our metrics using ```calc_metrics.py``` and the SR outputs you provide in ```results/```. Please ensure that you adhere to our naming conventions. We report average PSNR/SSIM on RGB and Y-Channel.
@@ -66,9 +67,29 @@ We compute the average runtime of your model per image and report FLOPs with ```
 python demo/runtime_demo.py --submission-id [YOUR-SUBMISSION-ID] --model-name [YOUR-MODEL-NAME]
 ```
 
-### Performance of baseline methods
 
-We use the script `test.py` to measure the runtime performance of the baseline models. We use GPU warm-up and average the runtime over `n=244` repetitions. Results are listed below.
+## **Performance of baseline methods**
+
+We use the script `test.py` to measure the runtime performance of the baseline models. We use GPU warm-up and average the runtime over `n=244` repetitions. Results are listed below. This baseline method is based on the work presented at [Mobile AI & AIM 2022 Challenge: Efficient and Accurate Quantized Image Super-Resolution on Mobile NPUs](https://arxiv.org/pdf/2211.05910.pdf).
+
+| Method                                                                                    | GPU            | Runtime  | Resolution   | FP32     | **FP16**   | TensorRT FP16 | 
+|-------------------------------------------------------------------------------------------|----------------|----------|--------------|----------|------------|---------------|
+|[**RTSRB**](https://github.com/eduardzamfir/NTIRE23-RTSR/blob/master/demo/models/rtsrn.py) | RTX 3090 24 Gb | in ms    | 1080p -> 4K  | 44.83    | **27.86**  |    11.26      |
+|                                                                                           |                |          | 720p  -> 4K  | 19.77    | **12.19**  |    5.41       |  
+
+**NOTE:** The scoring is done based on the FP16 performance without TensorRT. We specify the versions used of TensorRT below, in case you want to run your method with TensorRT. You can find an example [here](https://github.com/pytorch/TensorRT/blob/main/notebooks/EfficientNet-example.ipynb).
+```
+tensorrt=8.5.3.1
+torch-tensorrt=1.3.0
+```
+
+<img src="images/rtsrn.png" width="512" />
+
+----
+
+We also report the runtime performance of other methods presented at [NTIRE 2022 Efficient Super-Resolution Challenge](https://openaccess.thecvf.com/content/CVPR2022W/NTIRE/papers/Li_NTIRE_2022_Challenge_on_Efficient_Super-Resolution_Methods_and_Results_CVPRW_2022_paper.pdf).
+
+
 
 | Method                                       | GPU            | Runtime  | Resolution | FP32     | FP16     | 
 |----------------------------------------------|----------------|----------|------------|----------|----------|
