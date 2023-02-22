@@ -28,7 +28,7 @@ class RealTimeSRNet(nn.Module):
         self.body = nn.Sequential(*body)
         
         self.upsample = nn.Sequential(
-            nn.Conv2d(num_feats, num_channels * (upscale ** 2), 3),
+            nn.Conv2d(num_feats, num_channels * (upscale ** 2), 3, padding=1),
             nn.PixelShuffle(upscale)            
         )
     
