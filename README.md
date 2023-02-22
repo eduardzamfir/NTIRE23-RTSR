@@ -1,4 +1,4 @@
-# [NTIRE 2023 Real-Time Super-Resolution](https://cvlai.net/ntire/2023/) @ CVPR 2023
+# [NTIRE Real-Time Super-Resolution](https://cvlai.net/ntire/2023/) @ CVPR 2023
 
 
 ![visitors](https://visitor-badge.glitch.me/badge?page_id=eduardzamfir/NTIRE23-RTSR)
@@ -15,7 +15,7 @@
 ## About the Challenge
 The [8th edition of NTIRE: New Trends in Image Restoration and Enhancement](https://cvlai.net/ntire/2023/) workshop will be held on June 18th, 2023 in conjunction with CVPR 2023. Top solutions will be presented at the NTIRE Workshop, and will appear in the conference proceedings.
 
-Image Super-Resolution is one of the most popular computer vision problems due to its real-world applications: photography, gaming, generative AI, etc. The goal of the NTIRE 2023 Real-Time Super-Resolution Challenge is to **upscale images in real-time** at 30-60FPS using deep learning models and commercial GPUs (RTX 3060, 3090). 
+Image Super-Resolution is one of the most popular computer vision problems due to its real-world applications: photography, gaming, generative AI, etc. The goal of the **NTIRE 2023 Real-Time Super-Resolution Challenge** is to **upscale images in real-time** at 30-60FPS using deep learning models and commercial GPUs (RTX 3060, 3090). 
 The input images can be large patches or full-resolution images, compressed using JPEG q=90. The challenge has two tracks:
 
 **Track 1**: Upscaling from FHD 1080p to 4K resolution (X2 factor) | [CodaLab Server](https://codalab.lisn.upsaclay.fr/competitions/10227)
@@ -29,6 +29,8 @@ The submitted methods will be tested to ensure they satisfy real-time processing
 * Participants can train the models using **any** publicly available open-sourced dataset. Although, complete details must be provided in the report.
 * The validation/test dataset consists on a brand-new dataset that includes diverse high-quality filtered content from: **digital art**, **videogames**, **photographies** - Please consider this variety when training your models.
 
+See also the [NTIRE 2023 Efficient Super-Resolution Challenge](https://codalab.lisn.upsaclay.fr/competitions/10256#learn_the_details).
+
 ----
 
 
@@ -41,7 +43,7 @@ We use the script `test.py` to measure the runtime performance of the baseline m
 |[**RTSRN**](https://github.com/eduardzamfir/NTIRE23-RTSR/blob/master/demo/models/rtsrn.py) | RTX 3090 24 Gb | in ms    | 1080p -> 4K (x2) | 44.83    | **27.86**  |    11.26      |
 |                                                                                           |                |          | 720p  -> 4K (x3) | 19.77    | **12.19**  |    5.41       |  
 
-**NOTE:** The scoring is done based on the FP16 performance without TensorRT. We specify the versions used of TensorRT below, in case you want to run your method with TensorRT. You can find an example [here](https://github.com/pytorch/TensorRT/blob/main/notebooks/EfficientNet-example.ipynb).
+> **NOTE:** The scoring is done based on the FP16 performance **without** TensorRT. We specify the versions used of TensorRT below, in case you want to run your method with TensorRT. You can find an example [here](https://github.com/pytorch/TensorRT/blob/main/notebooks/EfficientNet-example.ipynb).
 ```
 tensorrt=8.5.3.1
 torch-tensorrt=1.3.0
@@ -133,3 +135,16 @@ Further, we want to show the PSNR differences between running models using `FP16
 | Method                                          | PSNR (RGB) | Resolution | FP32  | FP16  |
 |-------------------------------------------------|------------|------------|-------|-------|
 |[**Swin2SR**](https://github.com/mv-lab/swin2sr) | in dB      | X2 -> 2K   | 32.38 | 28.05 |
+
+
+
+## Contact
+
+- Marcos Conde (marcos.conde@uni-wuerzburg.de)
+- Eduard-Sebastian Zamfir (Eduard-Sebastian.Zamfir@uni-wuerzburg.de)
+
+## References
+
+[1] [Mobile AI & AIM 2022 Challenge: Efficient and Accurate Quantized Image Super-Resolution on Mobile NPUs](https://arxiv.org/pdf/2211.05910.pdf)
+
+[2] [NTIRE 2022 Efficient Super-Resolution Challenge](https://openaccess.thecvf.com/content/CVPR2022W/NTIRE/papers/Li_NTIRE_2022_Challenge_on_Efficient_Super-Resolution_Methods_and_Results_CVPRW_2022_paper.pdf)
