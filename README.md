@@ -83,7 +83,7 @@ tensorrt=8.5.3.1
 torch-tensorrt=1.3.0
 ```
 
-<img src="images/rtsrn.png" width="512" />
+<img src="images/rtsrnet.png" width="800" />
 
 ----
 
