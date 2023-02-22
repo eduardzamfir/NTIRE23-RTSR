@@ -1,30 +1,65 @@
-# [NTIRE 2023 Real-Time Super-Resolution Challenge](https://cvlai.net/ntire/2023/) @ CVPR 2023
+# [NTIRE 2023 Real-Time Super-Resolution](https://cvlai.net/ntire/2023/) @ CVPR 2023
+
+
+![visitors](https://visitor-badge.glitch.me/badge?page_id=eduardzamfir/NTIRE23-RTSR)
+
+
+**[Marcos V. Conde](https://scholar.google.com/citations?user=NtB1kjYAAAAJ&hl=en), [Eduard Zamfir](https://scholar.google.com/citations?hl=en&user=5-FIWKoAAAAJ), [Radu Timofte](https://scholar.google.com/citations?user=u3MwH5kAAAAJ&hl=en)**
+
+
+[Computer Vision Lab, CAIDAS, University of Würzburg](https://www.informatik.uni-wuerzburg.de/computervision/home/)
+
+
+----
 
 ## About the Challenge
-The [8th edition of NTIRE: New Trends in Image Restoration and Enhancement](https://cvlai.net/ntire/2023/) workshop will be held on June 18th, 2023 in conjunction with CVPR 2023.
+The [8th edition of NTIRE: New Trends in Image Restoration and Enhancement](https://cvlai.net/ntire/2023/) workshop will be held on June 18th, 2023 in conjunction with CVPR 2023. Top solutions will be presented at the NTIRE Workshop, and will appear in the conference proceedings.
 
-Image Super-Resolution is one of the most popular computer vision problems due to its real-world applications: photography, gaming, generative AI, etc. The goal of the NTIRE 2023 Real-Time Super-Resolution Challenge is to upscale images in real-time at 60FPS using deep learning models and commercial GPUs (RTX 3060, 3090). 
+Image Super-Resolution is one of the most popular computer vision problems due to its real-world applications: photography, gaming, generative AI, etc. The goal of the NTIRE 2023 Real-Time Super-Resolution Challenge is to **upscale images in real-time** at 30-60FPS using deep learning models and commercial GPUs (RTX 3060, 3090). 
 The input images can be large patches or full-resolution images, compressed using JPEG q=90. The challenge has two tracks:
 
 **Track 1**: Upscaling from FHD 1080p to 4K resolution (X2 factor) | [CodaLab Server](https://codalab.lisn.upsaclay.fr/competitions/10227)
 
 **Track 2**: Upscaling from HD 720p to 4K resolution (X3 factor) | [CodaLab Server](https://codalab.lisn.upsaclay.fr/competitions/10228)
 
-The submitted methods will be tested to ensure they satisfy real-time processing on RTX 3060 (12Gb) / RTX 3090 (24Gb), and will be ranked based on the fidelity (PSNR, SSIM) of their results w.r.t. the high-resolution reference images in our internal test set. The scoring kernel will be provided to the participants. More details about the specs of the VM we use to run the models and measure metrics such as FLOPs, memory consumption, runtime per image (ms), will be provided to the participants via GitHub.
+The submitted methods will be tested to ensure they satisfy real-time processing on RTX RTX 3090 (24Gb), and will be ranked based on the fidelity (PSNR, SSIM) of their results w.r.t. the high-resolution reference images in our internal test set.
 
 **IMPORTANT**
 
 * Participants can train the models using **any** publicly available open-sourced dataset. Although, complete details must be provided in the report.
-* The validation/test dataset consists on a brand-new dataset that includes high-quality filtered content from: **digital art**, **videogames**, **photographies** - Please consider this variety when training your models.
+* The validation/test dataset consists on a brand-new dataset that includes diverse high-quality filtered content from: **digital art**, **videogames**, **photographies** - Please consider this variety when training your models.
 
-## About this repository
-**Prepare Test Dataset**
+----
+
+
+## **Performance of baseline methods**
+
+We use the script `test.py` to measure the runtime performance of the baseline models. We use GPU warm-up and average the runtime over `n=244` repetitions. Results are listed below. This baseline method is based on the work presented at [Mobile AI & AIM 2022 Challenge: Efficient and Accurate Quantized Image Super-Resolution on Mobile NPUs](https://arxiv.org/pdf/2211.05910.pdf).
+
+| Method                                                                                    | GPU            | Runtime  | Resolution   | FP32     | **FP16**   | TensorRT FP16 | 
+|-------------------------------------------------------------------------------------------|----------------|----------|--------------|----------|------------|---------------|
+|[**RTSRN**](https://github.com/eduardzamfir/NTIRE23-RTSR/blob/master/demo/models/rtsrn.py) | RTX 3090 24 Gb | in ms    | 1080p -> 4K (x2) | 44.83    | **27.86**  |    11.26      |
+|                                                                                           |                |          | 720p  -> 4K (x3) | 19.77    | **12.19**  |    5.41       |  
+
+**NOTE:** The scoring is done based on the FP16 performance without TensorRT. We specify the versions used of TensorRT below, in case you want to run your method with TensorRT. You can find an example [here](https://github.com/pytorch/TensorRT/blob/main/notebooks/EfficientNet-example.ipynb).
+```
+tensorrt=8.5.3.1
+torch-tensorrt=1.3.0
+```
+
+<img src="images/rtsrnet.png" width="800" />
+
+<br>
+
+##  **Prepare Test Dataset**
 
 We degrade the high-resolution images with bicubic downsampling and JPEG compression. You can generate the low-resolution counterparts using following command.
 
 ````
 python demo/data/prepare_data.py --image-dir [IMAGE-ROOT] --lr-out-dir [LR-OUT-ROOT] --gt-out-dir [GT-OUT-DIR] --downsample-factor [2|3] --jpeg-level 90
 ````
+
+<br>
 
 ## **Evaluation of your submission**
 
@@ -67,24 +102,15 @@ We compute the average runtime of your model per image and report FLOPs with ```
 python demo/runtime_demo.py --submission-id [YOUR-SUBMISSION-ID] --model-name [YOUR-MODEL-NAME]
 ```
 
+### **Scoring Functions**
 
-## **Performance of baseline methods**
+The scoring function can be consulted in [calc_scoring.ipynb](demo/calc_scoring.ipynb). Here we show a plot of `Score x Runtime (1 to 42ms)`. [RTSRN](https://github.com/eduardzamfir/NTIRE23-RTSR/blob/master/demo/models/rtsrn.py) is the baseline proposed above. Methods below Bicubic performance are nullified `score=0`.
 
-We use the script `test.py` to measure the runtime performance of the baseline models. We use GPU warm-up and average the runtime over `n=244` repetitions. Results are listed below. This baseline method is based on the work presented at [Mobile AI & AIM 2022 Challenge: Efficient and Accurate Quantized Image Super-Resolution on Mobile NPUs](https://arxiv.org/pdf/2211.05910.pdf).
 
-| Method                                                                                    | GPU            | Runtime  | Resolution   | FP32     | **FP16**   | TensorRT FP16 | 
-|-------------------------------------------------------------------------------------------|----------------|----------|--------------|----------|------------|---------------|
-|[**RTSRN**](https://github.com/eduardzamfir/NTIRE23-RTSR/blob/master/demo/models/rtsrn.py) | RTX 3090 24 Gb | in ms    | 1080p -> 4K  | 44.83    | **27.86**  |    11.26      |
-|                                                                                           |                |          | 720p  -> 4K  | 19.77    | **12.19**  |    5.41       |  
+<img src="images/score.png" width="800" />
 
-**NOTE:** The scoring is done based on the FP16 performance without TensorRT. We specify the versions used of TensorRT below, in case you want to run your method with TensorRT. You can find an example [here](https://github.com/pytorch/TensorRT/blob/main/notebooks/EfficientNet-example.ipynb).
-```
-tensorrt=8.5.3.1
-torch-tensorrt=1.3.0
-```
 
-<img src="images/rtsrnet.png" width="800" />
-
+### **Other Baselines**
 
 We also report the runtime performance of other methods presented at [NTIRE 2022 Efficient Super-Resolution Challenge](https://openaccess.thecvf.com/content/CVPR2022W/NTIRE/papers/Li_NTIRE_2022_Challenge_on_Efficient_Super-Resolution_Methods_and_Results_CVPRW_2022_paper.pdf).
 
