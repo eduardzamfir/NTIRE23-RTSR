@@ -85,7 +85,6 @@ torch-tensorrt=1.3.0
 
 <img src="images/rtsrnet.png" width="800" />
 
-----
 
 We also report the runtime performance of other methods presented at [NTIRE 2022 Efficient Super-Resolution Challenge](https://openaccess.thecvf.com/content/CVPR2022W/NTIRE/papers/Li_NTIRE_2022_Challenge_on_Efficient_Super-Resolution_Methods_and_Results_CVPRW_2022_paper.pdf).
 
