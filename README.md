@@ -38,10 +38,10 @@ See also the [NTIRE 2023 Efficient Super-Resolution Challenge](https://codalab.l
 
 We use the script `test.py` to measure the runtime performance of the baseline models. We use GPU warm-up and average the runtime over `n=244` repetitions. Results are listed below. This baseline method is based on the work presented at [Mobile AI & AIM 2022 Challenge: Efficient and Accurate Quantized Image Super-Resolution on Mobile NPUs](https://arxiv.org/pdf/2211.05910.pdf).
 
-| Method                                                                                    | GPU            | Runtime  | Resolution   | FP32     | **FP16**   | TensorRT FP16 | 
-|-------------------------------------------------------------------------------------------|----------------|----------|--------------|----------|------------|---------------|
-|[**RTSRN**](https://github.com/eduardzamfir/NTIRE23-RTSR/blob/master/demo/models/rtsrn.py) | RTX 3090 24 Gb | in ms    | 1080p -> 4K (x2) | 44.83    | **27.86**  |    11.26      |
-|                                                                                           |                |          | 720p  -> 4K (x3) | 19.77    | **12.19**  |    5.41       |  
+| Method                                                                                    | GPU            | Runtime  | Resolution       | FP32     | **FP16**   | TensorRT FP16 | 
+|-------------------------------------------------------------------------------------------|----------------|----------|------------------|----------|------------|---------------|
+|[**RTSRN**](https://github.com/eduardzamfir/NTIRE23-RTSR/blob/master/demo/models/rtsrn.py) | RTX 3090 24 Gb | in ms    | 1080p -> 4K (x2) | 49.14    | **29.93**  |    10.97      |
+|                                                                                           |                |          | 720p  -> 4K (x3) | 21.84    | **13.28**  |    5.32       |  
 
 > **NOTE:** The scoring is done based on the FP16 performance **without** TensorRT. We specify the versions used of TensorRT below, in case you want to run your method with TensorRT. You can find an example [here](https://github.com/pytorch/TensorRT/blob/main/notebooks/EfficientNet-example.ipynb).
 ```
