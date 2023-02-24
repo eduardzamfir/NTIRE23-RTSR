@@ -22,7 +22,7 @@ class RealTimeSRNet(nn.Module):
         body = []
         for i in range(num_blocks):
             body.append(nn.Conv2d(num_feats, num_feats, 3, padding=1))
-            if i > num_blocks:
+            if i < num_blocks -1:
                 body.append(nn.ReLU(True))
                 
         self.body = nn.Sequential(*body)
