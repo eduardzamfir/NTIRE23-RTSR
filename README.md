@@ -84,7 +84,7 @@ submission_{submission-id}.zip/
 
 * ```arch.py```: This file contains your network architecture. Additionally, we request a simple ```srmodel()``` method which returns an instance of your method initialized from your submitted ```checkpoint.pth``` file. In case you are submitting multiple checkpoints, we select a single file randomly. 
 * ```utils/```: You may have an additional directory ```utils/``` containing necessary scripts and files to run your model. Please be aware that we expect ```srmodel()``` to return your method with correct configuration, checkpoint etc. **without** input arguments.
-* ```results/```: This directory contains your SR outputs saved as ```.png``` files. We calculate PSNR/SSIM metrics using your provided super-resolved images and compare to our internal evaluation of your method using ```test.py```.
+* ```results/```: This directory contains your SR outputs saved as ```.png``` files. We calculate PSNR/SSIM metrics using your provided super-resolved images and compare to our internal evaluation of your method using our testing code.
 * ```requirements.txt```: Please provide an ```requirements.txt``` file in case you use additional libraries besides the ones described in **our** ```requirements.txt``` file.
 * We added in ```demo/``` a ```submission_test.zip``` as example.
 
