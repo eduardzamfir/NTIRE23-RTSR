@@ -78,7 +78,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--gt-dir", type=str, default=os.path.join(pathlib.Path.home(), "projects/ntire/NTIRE23-RTSR", "demo/testset/GT"))
     parser.add_argument("--sr-dir", type=str, default=os.path.join(pathlib.Path.home(), "projects/ntire/NTIRE23-RTSR", "demo/submissions"))
-    parser.add_argument("--submission-id", type=str, default="team_12")
+    parser.add_argument("--submission-id", type=str, default="bicubic")
     parser.add_argument("--scale", default=2, type=int)
     args = parser.parse_args()
     

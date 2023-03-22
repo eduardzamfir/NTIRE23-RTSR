@@ -106,7 +106,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     # specify submission
-    parser.add_argument("--submission-id", type=str, default="team_01")
+    parser.add_argument("--submission-id", type=str, default="bicubic")
     parser.add_argument("--model-name", type=str, choices=["swin2sr", "imdn", "rfdn"], default=None)
     parser.add_argument("--checkpoint", type=str, default=None)
     
