@@ -5,6 +5,7 @@ import pathlib
 import logging
 import argparse
 import numpy as np
+import importlib
 import torch.nn.functional as F
 import torch_tensorrt
 
@@ -20,16 +21,20 @@ from utils import util_image as util
 from utils.model_summary import get_model_flops
 
 
+def import_srmodel(team):
+    try:
+        module = importlib.import_module(f"models.{team}.arch")
+        func = getattr(module, "srmodel")
+        return func
+    except (ModuleNotFoundError, AttributeError):
+        raise ValueError("Invalid module name or method name")
+
+
 def main(args):
-    """
-    SETUP DIRS
-    """
-    pathlib.Path(os.path.join(args.save_dir, args.submission_id, "results")).mkdir(parents=True, exist_ok=True)
-    
     """
     SETUP LOGGER
     """
-    util_logger.logger_info("NTIRE2023-RTSR", log_path=os.path.join(args.save_dir, args.submission_id, f"Submission_{args.submission_id}.txt"))
+    util_logger.logger_info("NTIRE2023-RTSR", log_path=os.path.join(args.save_dir, args.submission_id, "results", f"Submission_{args.submission_id}.txt"))
     logger = logging.getLogger("NTIRE2023-RTSR")
     
     """
@@ -44,8 +49,13 @@ def main(args):
     """
     LOAD MODEL
     """
-    model = models.__dict__[args.model_name](args.scale)
+    # get model
+    if args.model_name is None:
+        model = import_srmodel(args.submission_id)()
+    else:
+        model = models.__dict__[args.model_name]()
     model.eval()
+    
     for k, v in model.named_parameters():
         v.requires_grad = False
             
@@ -53,6 +63,7 @@ def main(args):
     
     # number of parameters
     number_parameters = sum(map(lambda x: x.numel(), model.parameters()))
+    logger.info(f"Results of X{args.scale}")
     logger.info('Params number: {}'.format(number_parameters))
           
             
@@ -113,11 +124,11 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     # specify submission
-    parser.add_argument("--submission-id", type=str)
-    parser.add_argument("--model-name", type=str, choices=["swin2sr", "imdn", "rfdn", "rtsrn"])
-
+    parser.add_argument("--submission-id", type=str, default="bicubic")
+    parser.add_argument("--model-name", type=str, choices=["swin2sr", "imdn", "rfdn", "rtsrn"], default=None)
+    
     # specify dirs
-    parser.add_argument("--save-dir", type=str, default="internal")
+    parser.add_argument("--save-dir", type=str, default=os.path.join(pathlib.Path.home(), "projects/ntire/NTIRE23-RTSR", "demo/submissions"))
     
     # specify test case
     parser.add_argument("--scale", type=int, default=2)

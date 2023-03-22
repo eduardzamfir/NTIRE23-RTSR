@@ -57,11 +57,12 @@ class CenterCrop:
 
 # Dataset
 class SRDataset(data.Dataset):
-    def __init__(self, lr_images_dir, transform=None, n_channels=3):
-        self.lr_images_dir = lr_images_dir
-        self.lr_images = sorted(os.listdir(lr_images_dir))
+    def __init__(self, lr_images_dir, scale, transform=None, n_channels=3, rgb_range=1):
+        self.lr_images_dir = os.path.join(lr_images_dir, f"LR{scale}")
+        self.lr_images = sorted(os.listdir(self.lr_images_dir))
         self.transform = transform
         self.n_channels = n_channels
+        self.rgb_range = rgb_range
 
     def __len__(self):
         return len(self.lr_images)
@@ -70,10 +71,20 @@ class SRDataset(data.Dataset):
         img_path = os.path.join(self.lr_images_dir, self.lr_images[index])
        
         img_L = util.imread_uint(img_path, n_channels=self.n_channels)
-        img_L = util.uint2tensor3(img_L)
+        img_L = self.uint2tensor3(img_L, rgb_range=self.rgb_range)
 
 
         if self.transform:
             img_L = self.transform(img_L)
 
         return img_L, self.lr_images[index]
+    
+    @staticmethod
+    def uint2tensor3(img, rgb_range):
+        if img.ndim == 2:
+            img = np.expand_dims(img, axis=2)
+            
+        if rgb_range != 1:
+            return torch.from_numpy(np.ascontiguousarray(img)).permute(2, 0, 1).float()
+        else:
+            return torch.from_numpy(np.ascontiguousarray(img)).permute(2, 0, 1).float().div_(255.0)

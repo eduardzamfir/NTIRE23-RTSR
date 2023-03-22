@@ -3,6 +3,7 @@ import torch
 import pathlib
 import logging
 import argparse
+import importlib
 import torch.nn.functional as F
 
 from tqdm import tqdm
@@ -17,18 +18,20 @@ from utils import util_image as util
 from utils.model_summary import get_model_flops
 
 
+def import_srmodel(team):
+    try:
+        module = importlib.import_module(f"models.{team}.arch")
+        func = getattr(module, "srmodel")
+        return func
+    except (ModuleNotFoundError, AttributeError):
+        raise ValueError("Invalid module name or method name")
+
 
 def main(args):
     """
     SETUP DIRS
     """
-    pathlib.Path(os.path.join(args.save_dir, args.submission_id, "results")).mkdir(parents=True, exist_ok=True)
-    
-    """
-    SETUP LOGGER
-    """
-    util_logger.logger_info("NTIRE2023-RTSR", log_path=os.path.join(args.save_dir, args.submission_id, f"Submission_{args.submission_id}.txt"))
-    logger = logging.getLogger("NTIRE2023-RTSR")
+    pathlib.Path(os.path.join(args.save_dir, args.submission_id, "results", f"SR{args.scale}")).mkdir(parents=True, exist_ok=True)
     
     """
     BASIC SETTINGS
@@ -43,24 +46,28 @@ def main(args):
     LOAD MODEL
     """
     if not args.bicubic:
-        model = models.__dict__[args.model_name]()
-        if args.checkpoint is not None:
-            model_path = os.path.join(args.checkpoint)
-            model.load_state_dict(torch.load(model_path), strict=True)
+        # get model
+        if args.model_name is None:
+            model = import_srmodel(args.submission_id)()
+        else:
+            model = models.__dict__[args.model_name]()
+            
+            # load checkpoint
+            if args.checkpoint is not None:
+                model_path = os.path.join(args.checkpoint)
+                model.load_state_dict(torch.load(model_path), strict=True)
+                
         model.eval()
+        
         for k, v in model.named_parameters():
             v.requires_grad = False
         model = model.to(device)
-        
-        # number of parameters
-        number_parameters = sum(map(lambda x: x.numel(), model.parameters()))
-        logger.info('Params number: {}'.format(number_parameters))
    
     
     """
     SETUP DATALOADER
     """
-    dataset = dd.SRDataset(lr_images_dir=args.lr_dir, n_channels=3, transform=None)
+    dataset = dd.SRDataset(lr_images_dir=args.lr_dir, scale=args.scale, n_channels=3, transform=None, rgb_range=args.rgb_range) # TODO: specify if int8, fp16, fp32 or rgb range
     dataloader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=True, drop_last=True)
     
     
@@ -76,7 +83,7 @@ def main(args):
             
             # forward pass
             if args.bicubic:
-                img_E = F.interpolate(img_L, scale_factor=args.scale, mode="bicubic", align_corners=False)
+                img_E = F.interpolate(img_L, scale_factor=args.scale, mode="bicubic", align_corners=False).clamp(min=0, max=args.rgb_range)
             else:
                 if args.fp16:
                     with torch.autocast(device_type="cuda", dtype=torch.float16):
@@ -84,34 +91,37 @@ def main(args):
                 else:
                     img_E = model(img_L)
             
-            if args.save_sr:    
-                # postprocess
-                img_E = util.tensor2uint(img_E)
-                
-                # save model output
-                util.imsave(img_E, os.path.join(os.path.join(args.save_dir, args.submission_id, "results", img_name + ".png")))
+            # check RGB range
+            if args.rgb_range != 1:
+                img_E /= 255.0
+                    
+            # postprocess
+            img_E = util.tensor2uint(img_E)
+            
+            # save model output
+            util.imsave(img_E, os.path.join(args.save_dir, args.submission_id, "results", f"SR{args.scale}", img_name + ".png"))
                 
         
         
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     # specify submission
-    parser.add_argument("--submission-id", type=str)
-    parser.add_argument("--model-name", type=str, choices=["swin2sr", "imdn", "rfdn"])
+    parser.add_argument("--submission-id", type=str, default="team_01")
+    parser.add_argument("--model-name", type=str, choices=["swin2sr", "imdn", "rfdn"], default=None)
     parser.add_argument("--checkpoint", type=str, default=None)
     
     # specify dirs
-    parser.add_argument("--lr-dir", type=str)
-    parser.add_argument("--save-sr", action="store_true")
-    parser.add_argument("--save-dir", type=str, default="internal")
+    parser.add_argument("--lr-dir", type=str, default=os.path.join(pathlib.Path.home(), "projects/ntire/NTIRE23-RTSR", "demo/testset"))
+    parser.add_argument("--save-dir", type=str, default=os.path.join(pathlib.Path.home(), "projects/ntire/NTIRE23-RTSR", "demo/submissions"))
     
     # specify test case
     parser.add_argument("--scale", type=int, default=2)
+    parser.add_argument("--rgb-range", default=1, type=float)
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--num-workers", type=int, default=1)
     parser.add_argument("--crop-size", type=int, nargs="+", default=[1080, 2040])
     parser.add_argument("--bicubic", action="store_true")
     parser.add_argument("--fp16", action="store_true")
     args = parser.parse_args()
-        
+    
     main(args)

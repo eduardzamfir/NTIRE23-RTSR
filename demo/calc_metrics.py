@@ -1,15 +1,18 @@
 import os
 import torch
+import pathlib
 import logging
 import argparse
+import numpy as np
 
 from tqdm import tqdm
+from PIL import Image
 from collections import OrderedDict
 
 
 from utils import util_logger
 from utils import util_image as util
-from utils.model_summary import get_model_flops
+from utils import util_metrics as metrics
 
 
 
@@ -17,8 +20,8 @@ def main(args):
     """
     SETUP LOGGER
     """
-    util_logger.logger_info("NTIRE2023-Real-Time-SR", log_path=os.path.join(args.sr_dir, args.submission_id, f"Submission_{args.submission_id}.txt"))
-    logger = logging.getLogger("NTIRE2023-Real-Time-SR")
+    util_logger.logger_info("NTIRE2023-RTSR", log_path=os.path.join(args.sr_dir, args.submission_id, "results", f"Submission_{args.submission_id}.txt"))
+    logger = logging.getLogger("NTIRE2023-RTSR")
     
     """
     SETUP METRICS
@@ -32,7 +35,7 @@ def main(args):
     """
     SETUP DIRS
     """
-    sr_images = util.get_image_paths(os.path.join(args.sr_dir, args.submission_id, "results"))
+    sr_images = util.get_image_paths(os.path.join(args.sr_dir, args.submission_id, "results", f"SR{args.scale}"))
     hr_images = util.get_image_paths(args.gt_dir)
     
     """
@@ -50,17 +53,16 @@ def main(args):
         sr_img = util.imread_uint(sr, n_channels=3)
         hr_img = util.imread_uint(hr, n_channels=3)
         
-        # transform images to Y channel
-        sr_img_y = util.rgb2ycbcr(sr_img, only_y=True)
-        hr_img_y = util.rgb2ycbcr(hr_img, only_y=True)
+        assert sr_img.dtype == np.uint8
+        assert hr_img.dtype == np.uint8
         
         # compute metrics
-        test_results["psnr_rgb"].append(util.calculate_psnr(sr_img, hr_img, border=0))
-        test_results["ssim_rgb"].append(util.calculate_ssim(sr_img, hr_img, border=0))
-        test_results["psnr_y"].append(util.calculate_psnr(sr_img_y, hr_img_y, border=0))
-        test_results["ssim_y"].append(util.calculate_ssim(sr_img_y, hr_img_y, border=0))
+        test_results["psnr_rgb"].append(metrics.calculate_psnr(sr_img, hr_img, crop_border=0))
+        test_results["ssim_rgb"].append(metrics.calculate_ssim(sr_img, hr_img, crop_border=0))
+        test_results["psnr_y"].append(metrics.calculate_psnr(sr_img, hr_img, crop_border=0, test_y_channel=True))
+        test_results["ssim_y"].append(metrics.calculate_ssim(sr_img, hr_img, crop_border=0, test_y_channel=True))
 
-
+    logger.info(f"------> Results of X{args.scale}")
     ave_psnr_rgb = sum(test_results["psnr_rgb"]) / len(test_results["psnr_rgb"])
     logger.info('------> Average PSNR (RGB) of ({}) is : {:.6f} dB'.format(args.submission_id, ave_psnr_rgb))
     ave_ssim_rgb = sum(test_results["ssim_rgb"]) / len(test_results["ssim_rgb"])
@@ -74,9 +76,10 @@ def main(args):
         
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--gt-dir", type=str)
-    parser.add_argument("--sr-dir", type=str, default="./results")
-    parser.add_argument("--submission-id", type=str, default="bicubic_x2")
+    parser.add_argument("--gt-dir", type=str, default=os.path.join(pathlib.Path.home(), "projects/ntire/NTIRE23-RTSR", "demo/testset/GT"))
+    parser.add_argument("--sr-dir", type=str, default=os.path.join(pathlib.Path.home(), "projects/ntire/NTIRE23-RTSR", "demo/submissions"))
+    parser.add_argument("--submission-id", type=str, default="team_12")
+    parser.add_argument("--scale", default=2, type=int)
     args = parser.parse_args()
     
     main(args)
