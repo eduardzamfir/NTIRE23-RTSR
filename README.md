@@ -1,7 +1,9 @@
-# [NTIRE Real-Time Super-Resolution](https://cvlai.net/ntire/2023/) @ CVPR 2023
+# [NTIRE Real-Time 4K Super-Resolution](https://cvlai.net/ntire/2023/) @ CVPR 2023
 
 
 ![visitors](https://visitor-badge.glitch.me/badge?page_id=eduardzamfir/NTIRE23-RTSR)
+[![paper](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://openaccess.thecvf.com/content/CVPR2023W/NTIRE/papers/Conde_Efficient_Deep_Models_for_Real-Time_4K_Image_Super-Resolution._NTIRE_2023_CVPRW_2023_paper.pdf)
+[![paper](https://img.shields.io/badge/project-website-9cf)](https://eduardzamfir.github.io/NTIRE23-RTSR/)
 
 
 **[Marcos V. Conde](https://scholar.google.com/citations?user=NtB1kjYAAAAJ&hl=en), [Eduard Zamfir](https://scholar.google.com/citations?hl=en&user=5-FIWKoAAAAJ), [Radu Timofte](https://scholar.google.com/citations?user=u3MwH5kAAAAJ&hl=en)**
@@ -9,6 +11,47 @@
 
 [Computer Vision Lab, CAIDAS, University of Würzburg](https://www.informatik.uni-wuerzburg.de/computervision/home/)
 
+
+|  |  |
+|       :---       |     :---:     |
+| <a href="https://openaccess.thecvf.com/content/CVPR2023W/NTIRE/html/Zamfir_Towards_Real-Time_4K_Image_Super-Resolution_CVPRW_2023_paper.html"><img src="images/paper.png" width="200" border="0"></a> | <a href="https://openaccess.thecvf.com/content/CVPR2023W/NTIRE/html/Conde_Efficient_Deep_Models_for_Real-Time_4K_Image_Super-Resolution._NTIRE_2023_CVPRW_2023_paper.html"><img src="images/report.png" width="200" border="0"></a> |
+|  |  |
+
+🚀 🚀 🚀 **News**
+
+-  ["Efficient Deep Models for Real-Time 4K Image Super-Resolution. NTIRE 2023 Benchmark and Report"](https://openaccess.thecvf.com/content/CVPR2023W/NTIRE/papers/Conde_Efficient_Deep_Models_for_Real-Time_4K_Image_Super-Resolution._NTIRE_2023_CVPRW_2023_paper.pdf)
+- ["Towards Real-Time 4K Image Super-Resolution"](https://openaccess.thecvf.com/content/CVPR2023W/NTIRE/papers/Zamfir_Towards_Real-Time_4K_Image_Super-Resolution_CVPRW_2023_paper.pdf)
+- [Project website](https://eduardzamfir.github.io/NTIRE23-RTSR/) 
+- Dataset release soon (mid-June)
+- Presentation June 18th NTIRE workshop.
+
+<details>
+<summary><b>Citation</b></summary>
+<p><code>
+  @InProceedings{Conde_2023_CVPR,
+    author    = {Conde, Marcos V. and Zamfir, Eduard and Timofte, Radu and Motilla, Daniel and others},
+    title     = {Efficient Deep Models for Real-Time 4K Image Super-Resolution. NTIRE 2023 Benchmark and Report},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops},
+    month     = {June},
+    year      = {2023},
+    pages     = {1495-1521}
+}
+
+<br>
+
+@InProceedings{Zamfir_2023_CVPR,
+    author    = {Zamfir, Eduard and Conde, Marcos V. and Timofte, Radu},
+    title     = {Towards Real-Time 4K Image Super-Resolution},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops},
+    month     = {June},
+    year      = {2023},
+    pages     = {1522-1532}
+}
+</code></p>
+
+</details> 
+
+<br>
 
 ----
 
@@ -32,6 +75,12 @@ The submitted methods will be tested to ensure they satisfy real-time processing
 See also the [NTIRE 2023 Efficient Super-Resolution Challenge](https://codalab.lisn.upsaclay.fr/competitions/10256#learn_the_details).
 
 ----
+
+## Benchmark
+
+More information in our [report](https://openaccess.thecvf.com/content/CVPR2023W/NTIRE/papers/Conde_Efficient_Deep_Models_for_Real-Time_4K_Image_Super-Resolution._NTIRE_2023_CVPRW_2023_paper.pdf).
+
+<a href="https://openaccess.thecvf.com/content/CVPR2023W/NTIRE/html/Zamfir_Towards_Real-Time_4K_Image_Super-Resolution_CVPRW_2023_paper.html"><img src="images/report-bench.png" width="max-width" border="0"></a>
 
 
 ## **Performance of baseline methods**
@@ -136,7 +185,32 @@ Further, we want to show the PSNR differences between running models using `FP16
 |-------------------------------------------------|------------|------------|-------|-------|
 |[**Swin2SR**](https://github.com/mv-lab/swin2sr) | in dB      | X2 -> 2K   | 32.38 | 28.05 |
 
+<br>
 
+----
+
+## Citation and  acknowledgement
+
+```
+@InProceedings{Conde_2023_CVPR,
+    author    = {Conde, Marcos V. and Zamfir, Eduard and Timofte, Radu and Motilla, Daniel and others},
+    title     = {Efficient Deep Models for Real-Time 4K Image Super-Resolution. NTIRE 2023 Benchmark and Report},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops},
+    month     = {June},
+    year      = {2023},
+    pages     = {1495-1521}
+}
+
+@InProceedings{Zamfir_2023_CVPR,
+    author    = {Zamfir, Eduard and Conde, Marcos V. and Timofte, Radu},
+    title     = {Towards Real-Time 4K Image Super-Resolution},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops},
+    month     = {June},
+    year      = {2023},
+    pages     = {1522-1532}
+}
+
+```
 
 ## Contact
 
