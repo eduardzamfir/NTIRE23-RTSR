@@ -62,7 +62,7 @@
           <div class="is-size-5 publication-authors">
             <span class="author-block">Computer Vision Lab, University of Wurzburg</span>
             <br>
-            <small>*Website under construction*</small>
+            <small>Presentation at CVPR NTIRE June 18th</small>
           </div>
 
           <div class="column has-text-centered">
@@ -134,6 +134,58 @@
 </section>
 
 
+<script defer src="https://unpkg.com/img-comparison-slider@7/dist/index.js"></script>
+<link  rel="stylesheet"  href="https://unpkg.com/img-comparison-slider@7/dist/styles.css"/>
+
+<style>
+  .slider-example-split-line {
+    --divider-width: 4px;
+    --divider-color: #ffa658;
+    --default-handle-opacity: 0;
+  }
+</style>
+
+<style>
+  .before,
+  .after { margin: 0; }
+
+  .before figcaption,
+  .after figcaption {
+    background: #fff;
+    border: 1px solid #c0c0c0;
+    border-radius: 12px;
+    color: #2e3452;
+    opacity: 0.8;
+    padding: 12px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    line-height: 100%;
+  }
+
+  .before figcaption {left: 12px;}
+  .after figcaption { right: 12px;}
+</style>
+ 
+<div class="columns is-centered">
+
+  <img-comparison-slider tabindex="0" class="slider-example-split-line rendered"  hover="hover" >
+  <figure slot="first" class="before">
+    <img src="images/dragon-4k-up.jpg" width=100%>
+    <figcaption><strong>Before</strong></figcaption>
+  </figure>
+  <figure slot="second" class="after">
+    <img  src="images/dragon-4k-small.jpg"  width=100%>
+    <figcaption><strong>Super-Resolution</strong></figcaption>
+  </figure>
+  </img-comparison-slider>
+</div>
+ 
+<div class="columns is-centered"> 
+  
+</div>
+
+
 
 <section class="section">
   <div class="container is-max-desktop">
@@ -182,6 +234,22 @@
   </div>
 </section>
 
+<section class="section" id="News">
+  <div class="container is-max-desktop content">
+    <h2 class="title">News and Contact</h2>
+    <p>
+      If you have questions, please contact us at {marcos.conde, eduard-sebastian.zamfir}@uni-wuerzburg.de
+      <br>
+      <br>
+      [06/18/2023] Dataset release by 18th June at NTIRE 2023 workshop
+      <br>
+      [06/18/2023] Challenge methods release by 18th June at  <a href="https://github.com/eduardzamfir/NTIRE23-Real-Time-SR">https://github.com/eduardzamfir/NTIRE23-Real-Time-SR</a>
+      <br>
+      [01/30/2023] The challenges start in Codalab <a href="https://codalab.lisn.upsaclay.fr/competitions/10228">NTIRE 2023 Real-Time Super-Resolution - Track 1 (X2)</a>, over 200 participants
+    </p>
+  </div>
+</section>
+
 <section class="section" id="BibTeX">
   <div class="container is-max-desktop content">
     <h2 class="title">BibTeX</h2>
@@ -215,7 +283,9 @@
         <div class="content">
           <p>This website template is borrowed from <a rel="license" href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
           <br>
-          This challenge was organized by the Computer Vision Lab, University of Wurzburg as part of the 8th edition of NTIRE: New Trends in Image Restoration and Enhancement workshop at CVPR 2023.
+          This challenge was organized by the Computer Vision Lab, University of Wurzburg.
+          <br>
+          It is part of the 8th edition of <a href="https://cvlai.net/ntire/2023/">NTIRE: New Trends in Image Restoration and Enhancement workshop</a> at CVPR 2023.
           </p>
         </div>
     </div>
